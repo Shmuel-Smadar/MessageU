@@ -9,9 +9,5 @@
 !*.h
 !*.py
 
-# Allow specific files
-!my.info
-!server.info
-
 # Keep .gitignore itself
 !.gitignore
