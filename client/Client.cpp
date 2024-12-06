@@ -4,7 +4,8 @@
 Client::Client()
 	: userInterface(),
 	userInfoList(),
-	localUser() { }
+	localUser(),
+	encryptionManager() { }
 
 
 void Client::run() {
@@ -44,4 +45,16 @@ void Client::handleUserSelection(int selection) {
 	default:
 		userInterface.printMessage("Invalid selection. Please try again.");
 	}
+}
+
+
+void Client::registerClient() {
+	if (localUser.isRegistered()) {
+		userInterface.printMessage("Already registered.");
+		return;
+	}
+	std::string name = userInterface.getInput("Enter username: ");
+	localUser.setName(name);
+
+	std::string publicKey = encryptionManager.getPublicKey();
 }

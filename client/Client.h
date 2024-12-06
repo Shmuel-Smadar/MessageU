@@ -7,6 +7,7 @@
 #include "UserInterface.h"
 #include "UserInfoList.h"
 #include "Utils.h"
+#include "EncryptionManager.h"
 
 class Client {
 public:
@@ -16,8 +17,9 @@ public:
 private:
 
     void handleUserSelection(int selection);
-    /*TODO:
+    
     void registerClient();
+    /*TODO:
     void requestClientsList();
     void requestPublicKey();
     void requestWaitingMessages();
@@ -30,4 +32,5 @@ private:
     UserInfoList userInfoList;
     LocalUser localUser;
     UserInterface userInterface;
+    EncryptionManager encryptionManager;
 };
