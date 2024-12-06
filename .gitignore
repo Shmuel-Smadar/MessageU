@@ -1,0 +1,17 @@
+# Ignore everything
+*
+
+# Allow directories
+!*/
+
+# Allow .cpp, .h, and .py files
+!*.cpp
+!*.h
+!*.py
+
+# Allow specific files
+!my.info
+!server.info
+
+# Keep .gitignore itself
+!.gitignore
