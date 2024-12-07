@@ -1,24 +1,41 @@
 #include "EncryptionManager.h"
 
-EncryptionManager::EncryptionManager() {
 
+EncryptionManager::EncryptionManager()
+    : rsaPrivate(),
+    rsaPublic(rsaPrivate.getPublicKey()) {}
+
+EncryptionManager::EncryptionManager(const std::string& privateKeyStr)
+    : rsaPrivate(privateKeyStr),
+    rsaPublic(rsaPrivate.getPublicKey())
+
+{}
+
+std::string EncryptionManager::getPublicKey() const
+{
+    return rsaPublic.getPublicKey();
 }
 
-std::string EncryptionManager::getPublicKey() const {
-    return rsaPrivate.getPublicKey();
-
-}
-
-std::string EncryptionManager::getPrivateKey() const {
+std::string EncryptionManager::getPrivateKey() const
+{
     return rsaPrivate.getPrivateKey();
 }
 
-std::string EncryptionManager::encryptWithPublicKey(const std::string& publicKey, const std::string& message) {
-    RSAPublicWrapper rsaPublic(publicKey);
-    return rsaPublic.encrypt(message);
+void EncryptionManager::storePublicKey(std::string& clientID, std::string& key) {
+    publicKeys.emplace(clientID, key);
 }
 
-std::string EncryptionManager::decryptWithPrivateKey(const std::string& ciphertext) {
+std::string EncryptionManager::encryptWithPublicKey(const std::string& clientID, const std::string& message)
+{
+    auto it = publicKeys.find(clientID);
+    if (it != publicKeys.end()) {
+        return it->second.encrypt(message);
+    }
+    return "";
+}
+
+std::string EncryptionManager::decryptWithPrivateKey(const std::string& ciphertext)
+{
     return rsaPrivate.decrypt(ciphertext);
 }
 

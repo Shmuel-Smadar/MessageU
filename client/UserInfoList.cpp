@@ -42,23 +42,3 @@ void UserInfoList::printUsers() {
     }
 
 }
-
-void UserInfoList::addUserPublicKey(const std::string& clientID, const std::string& publicKey) {
-    for (auto& User : userInfoList) {
-        if (User.getClientID() == clientID) {
-            User.setPublicKey(publicKey);
-            return;
-        }
-    }
-    throw std::runtime_error("User with ID '" + clientID + "' not found.");
-}
-
-std::string UserInfoList::getUserPublicKey(const std::string& clientID) const {
-    for (const auto& User : userInfoList) {
-        if (User.getClientID() == clientID) {
-            return User.getPublicKey();
-        }
-    }
-    throw std::runtime_error("User with ID '" + clientID + "' not found.");
-}
-

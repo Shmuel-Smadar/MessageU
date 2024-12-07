@@ -6,8 +6,6 @@ UserInfo::UserInfo(const std::string& name, const std::string& clientID)
 {
     this->name = name;
     this->clientID = clientID;
-    this->publicKey = "";
-    this->symmetricKey = "";
 }
 
 
@@ -25,23 +23,6 @@ std::string UserInfo::getClientID() const {
 
 void UserInfo::setClientID(const std::string& clientID) {
     this->clientID = clientID;
-}
-
-std::string UserInfo::getPublicKey() const {
-    return publicKey;
-}
-
-void UserInfo::setPublicKey(const std::string& publicKey) {
-    this->publicKey = publicKey;
-}
-
-
-std::string UserInfo::getSymmetricKey() const {
-    return symmetricKey;
-}
-
-void UserInfo::setSymmetricKey(const std::string& symmetricKey) {
-    this->symmetricKey = symmetricKey;
 }
 
 

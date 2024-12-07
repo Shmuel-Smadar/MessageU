@@ -22,7 +22,6 @@ void LocalUser::checkRegistration() {
     this->name = name;
     this->clientID = clientID;
     std::cout << this->clientID << std::endl;
-    this->privateKey = Base64Wrapper::decode(privateKey);
 }
 
 bool LocalUser::saveToFile() {
@@ -31,7 +30,6 @@ bool LocalUser::saveToFile() {
 
     outfile << name << "\n";
     outfile << Utils::bytesToHex(clientID) << "\n";
-    outfile << Base64Wrapper::encode(privateKey) << "\n";
 
     outfile.close();
     return true;
@@ -51,22 +49,6 @@ std::string LocalUser::getClientID() const {
 
 void LocalUser::setClientID(const std::string& id) {
     clientID = id;
-}
-
-std::string LocalUser::getPublicKey() const {
-    return publicKey;
-}
-
-void LocalUser::setPublicKey(const std::string& key) {
-    publicKey = key;
-}
-
-std::string LocalUser::getPrivateKey() const {
-    return privateKey;
-}
-
-void LocalUser::setPrivateKey(const std::string& key) {
-    privateKey = key;
 }
 
 bool LocalUser::isRegistered() const {

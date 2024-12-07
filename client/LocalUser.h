@@ -15,8 +15,6 @@ class LocalUser {
 private:
     std::string name;
     std::string clientID;
-    std::string publicKey;
-    std::string privateKey;
     bool registered;
 
 public:
@@ -26,10 +24,6 @@ public:
 
     bool saveToFile();
 
-    std::string getPrivateKey() const;
-    void setPrivateKey(const std::string& privateKey);
-
-
     bool isRegistered() const;
     void setRegistered(bool status);
 
@@ -38,8 +32,5 @@ public:
 
     std::string getClientID() const;
     void setClientID(const std::string& ClientID);
-
-    std::string getPublicKey() const;
-    void setPublicKey(const std::string& publicKey);
 
 };
