@@ -5,7 +5,8 @@ Client::Client()
 	: userInterface(),
 	userInfoList(),
 	localUser(),
-	encryptionManager() { }
+	encryptionManager(),
+	networkManager() { }
 
 
 void Client::run() {
@@ -19,7 +20,7 @@ void Client::run() {
 void Client::handleUserSelection(int selection) {
 	switch (selection) {
 	case 1:
-		//registerClient();
+		registerClient();
 		break;
 	case 2:
 		//requestClientsList();
@@ -57,4 +58,5 @@ void Client::registerClient() {
 	localUser.setName(name);
 
 	std::string publicKey = encryptionManager.getPublicKey();
+	networkManager.connect();
 }

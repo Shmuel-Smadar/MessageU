@@ -1,13 +1,11 @@
 #pragma once
 
-
-
-
 #include "LocalUser.h"
 #include "UserInterface.h"
 #include "UserInfoList.h"
 #include "Utils.h"
 #include "EncryptionManager.h"
+#include "NetworkManager.h"
 
 class Client {
 public:
@@ -33,4 +31,5 @@ private:
     LocalUser localUser;
     UserInterface userInterface;
     EncryptionManager encryptionManager;
+    NetworkManager networkManager;
 };
