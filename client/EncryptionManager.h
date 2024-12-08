@@ -18,8 +18,10 @@ private:
 public:
     
     EncryptionManager();
-
     EncryptionManager(const std::string& privateKeyStr);
+    EncryptionManager(const EncryptionManager&) = delete;
+    EncryptionManager& operator=(const EncryptionManager&) = delete;
+    
 
     std::string getPublicKey() const;
     std::string getPrivateKey() const;

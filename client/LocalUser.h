@@ -19,8 +19,8 @@ private:
 
 public:
     LocalUser();
+    LocalUser(const std::string& name, const std::string& ClientID);
 
-    void checkRegistration();
 
     bool saveToFile();
 

@@ -3,9 +3,6 @@
 
 Client::Client()
 	: userInterface(),
-	userInfoList(),
-	localUser(),
-	encryptionManager(),
 	networkManager() { }
 
 
@@ -20,7 +17,7 @@ void Client::run() {
 void Client::handleUserSelection(int selection) {
 	switch (selection) {
 	case 1:
-		registerClient();
+		//registerClient();
 		break;
 	case 2:
 		//requestClientsList();
@@ -49,7 +46,7 @@ void Client::handleUserSelection(int selection) {
 }
 
 
-void Client::registerClient() {
+/*void Client::registerClient() {
 	if (localUser.isRegistered()) {
 		userInterface.printMessage("Already registered.");
 		return;
@@ -59,4 +56,4 @@ void Client::registerClient() {
 
 	std::string publicKey = encryptionManager.getPublicKey();
 	networkManager.connect();
-}
+}*/

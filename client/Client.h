@@ -16,7 +16,7 @@ private:
 
     void handleUserSelection(int selection);
     
-    void registerClient();
+    //void registerClient();
     /*TODO:
     void requestClientsList();
     void requestPublicKey();
@@ -27,9 +27,7 @@ private:
     void exitClient();*/
 
 
-    UserInfoList userInfoList;
-    LocalUser localUser;
+    
     UserInterface userInterface;
-    EncryptionManager encryptionManager;
     NetworkManager networkManager;
 };

@@ -1,27 +1,12 @@
 #include "LocalUser.h"
 
 LocalUser::LocalUser() {
-    checkRegistration();
+    this->registered = false;
 }
-
-void LocalUser::checkRegistration() {
-    std::ifstream infile("my.info");
-    if (!infile.is_open()) {
-        registered = false;
-        return;
-    }
-
-    std::string name, clientID, privateKey;
-    if (!std::getline(infile, name) || !std::getline(infile, clientID) || !std::getline(infile, privateKey)) {
-        std::cerr << "Error: Incomplete data in my.info file, either fix or delete it.\n";
-        exit(0);
-    }
-
-    infile.close();
-    registered = true;
+LocalUser::LocalUser(const std::string& name, const std::string& ClientID) {
     this->name = name;
     this->clientID = clientID;
-    std::cout << this->clientID << std::endl;
+    this->registered = true;
 }
 
 bool LocalUser::saveToFile() {
