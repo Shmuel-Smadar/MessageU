@@ -41,3 +41,14 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
     }
     return false;
 }
+
+bool NetworkManager::sendData(const std::vector<uint8_t>& data) {
+    try {
+        boost::asio::write(socket, boost::asio::buffer(data));
+        return true;
+    }
+    catch (std::exception& e) {
+        std::cerr << "Error while sending data: " << e.what() << std::endl;
+        return false;
+    }
+}

@@ -11,15 +11,15 @@
 #include "Base64Wrapper.h"
 #include "Utils.h"
 
-class LocalUser {
+class CurrentUser {
 private:
     std::string name;
     std::string clientID;
     bool registered;
 
 public:
-    LocalUser();
-    LocalUser(const std::string& name, const std::string& ClientID);
+    CurrentUser();
+    CurrentUser(const std::string& name, const std::string& ClientID);
 
 
     bool saveToFile();
