@@ -15,4 +15,5 @@ private:
     boost::asio::io_service ioService;
     boost::asio::ip::tcp::socket socket;
     bool readServerInfo(const std::string& filename);
+    bool sendData(const std::vector<uint8_t>& data);
 };

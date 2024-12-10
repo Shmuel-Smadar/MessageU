@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LocalUser.h"
+#include "CurrentUser.h"
 #include "UserInterface.h"
 #include "UserInfoList.h"
 #include "Utils.h"
@@ -31,6 +31,6 @@ private:
     UserInterface userInterface;
     NetworkManager networkManager;
     UserInfoList userInfoList;
-    LocalUser localUser;
+    CurrentUser currentUser;
     std::unique_ptr<EncryptionManager> encryptionManager;
 };

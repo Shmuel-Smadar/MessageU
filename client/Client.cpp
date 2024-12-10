@@ -12,7 +12,7 @@ Client::Client()
 void Client::checkRegistration() {
 	std::ifstream infile("my.info");
 	if (!infile.is_open()) {
-		localUser = LocalUser();
+		currentUser = CurrentUser();
 		encryptionManager = std::make_unique<EncryptionManager>();
 		return;
 	}
@@ -24,7 +24,7 @@ void Client::checkRegistration() {
 	}
 
 	infile.close();
-	localUser = LocalUser(name, clientID);
+	currentUser = CurrentUser(name, clientID);
 	encryptionManager = std::make_unique<EncryptionManager>(privateKey);
 }
 
@@ -70,12 +70,12 @@ void Client::handleUserSelection(int selection) {
 
 
 void Client::registerClient() {
-	if (localUser.isRegistered()) {
+	if (currentUser.isRegistered()) {
 		userInterface.printMessage("Already registered.");
 		return;
 	}
 	std::string name = userInterface.getInput("Enter username: ");
-	localUser.setName(name);
+	currentUser.setName(name);
 
 	std::string publicKey = encryptionManager->getPublicKey();
 	networkManager.connect();

@@ -1,15 +1,15 @@
-#include "LocalUser.h"
+#include "CurrentUser.h"
 
-LocalUser::LocalUser() {
+CurrentUser::CurrentUser() {
     this->registered = false;
 }
-LocalUser::LocalUser(const std::string& name, const std::string& ClientID) {
+CurrentUser::CurrentUser(const std::string& name, const std::string& ClientID) {
     this->name = name;
     this->clientID = clientID;
     this->registered = true;
 }
 
-bool LocalUser::saveToFile() {
+bool CurrentUser::saveToFile() {
     std::ofstream outfile("my.info", std::ios::binary);
     if (!outfile.is_open()) return false;
 
@@ -20,26 +20,26 @@ bool LocalUser::saveToFile() {
     return true;
 }
 
-std::string LocalUser::getName() const {
+std::string CurrentUser::getName() const {
     return name;
 }
 
-void LocalUser::setName(const std::string& name) {
+void CurrentUser::setName(const std::string& name) {
     this->name = name;
 }
 
-std::string LocalUser::getClientID() const {
+std::string CurrentUser::getClientID() const {
     return clientID;
 }
 
-void LocalUser::setClientID(const std::string& id) {
+void CurrentUser::setClientID(const std::string& id) {
     clientID = id;
 }
 
-bool LocalUser::isRegistered() const {
+bool CurrentUser::isRegistered() const {
     return registered;
 }
 
-void LocalUser::setRegistered(bool status) {
+void CurrentUser::setRegistered(bool status) {
     registered = status;
 }
