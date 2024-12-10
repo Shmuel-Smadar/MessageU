@@ -15,8 +15,8 @@ public:
 private:
 
     void handleUserSelection(int selection);
-    
-    //void registerClient();
+    void checkRegistration();
+    void registerClient();
     /*TODO:
     void requestClientsList();
     void requestPublicKey();
@@ -30,4 +30,7 @@ private:
     
     UserInterface userInterface;
     NetworkManager networkManager;
+    UserInfoList userInfoList;
+    LocalUser localUser;
+    std::unique_ptr<EncryptionManager> encryptionManager;
 };

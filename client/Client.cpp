@@ -3,7 +3,30 @@
 
 Client::Client()
 	: userInterface(),
-	networkManager() { }
+	userInfoList(),
+	networkManager(),
+	encryptionManager(nullptr) {
+	checkRegistration();
+}
+
+void Client::checkRegistration() {
+	std::ifstream infile("my.info");
+	if (!infile.is_open()) {
+		localUser = LocalUser();
+		encryptionManager = std::make_unique<EncryptionManager>();
+		return;
+	}
+
+	std::string name, clientID, privateKey;
+	if (!std::getline(infile, name) || !std::getline(infile, clientID) || !std::getline(infile, privateKey)) {
+		std::cerr << "Error: Incomplete data in my.info file.\n";
+		exit(0);
+	}
+
+	infile.close();
+	localUser = LocalUser(name, clientID);
+	encryptionManager = std::make_unique<EncryptionManager>(privateKey);
+}
 
 
 void Client::run() {
@@ -17,7 +40,7 @@ void Client::run() {
 void Client::handleUserSelection(int selection) {
 	switch (selection) {
 	case 1:
-		//registerClient();
+		registerClient();
 		break;
 	case 2:
 		//requestClientsList();
@@ -46,7 +69,7 @@ void Client::handleUserSelection(int selection) {
 }
 
 
-/*void Client::registerClient() {
+void Client::registerClient() {
 	if (localUser.isRegistered()) {
 		userInterface.printMessage("Already registered.");
 		return;
@@ -54,6 +77,6 @@ void Client::handleUserSelection(int selection) {
 	std::string name = userInterface.getInput("Enter username: ");
 	localUser.setName(name);
 
-	std::string publicKey = encryptionManager.getPublicKey();
+	std::string publicKey = encryptionManager->getPublicKey();
 	networkManager.connect();
-}*/
+}
