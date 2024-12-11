@@ -6,6 +6,8 @@
 #include "Utils.h"
 #include "EncryptionManager.h"
 #include "NetworkManager.h"
+#include "ProtocolHandler.h"
+
 
 class Client {
 public:
@@ -32,5 +34,6 @@ private:
     NetworkManager networkManager;
     UserInfoList userInfoList;
     CurrentUser currentUser;
+    ProtocolHandler protocolHandler;
     std::unique_ptr<EncryptionManager> encryptionManager;
 };

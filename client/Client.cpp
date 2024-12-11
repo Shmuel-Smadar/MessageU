@@ -4,7 +4,9 @@
 Client::Client()
 	: userInterface(),
 	userInfoList(),
+	currentUser(),
 	networkManager(),
+	protocolHandler(),
 	encryptionManager(nullptr) {
 	checkRegistration();
 }
@@ -74,9 +76,9 @@ void Client::registerClient() {
 		userInterface.printMessage("Already registered.");
 		return;
 	}
-	std::string name = userInterface.getInput("Enter username: ");
-	currentUser.setName(name);
-
+	currentUser.setName(userInterface.getInput("Enter username: "));
+	
 	std::string publicKey = encryptionManager->getPublicKey();
 	networkManager.connect();
+	networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
 }

@@ -8,6 +8,7 @@ public:
     NetworkManager();
     bool connect();
     void disconnect();
+    bool sendData(const std::vector<uint8_t>& data);
 
 private:
     std::string IP;
@@ -15,5 +16,5 @@ private:
     boost::asio::io_service ioService;
     boost::asio::ip::tcp::socket socket;
     bool readServerInfo(const std::string& filename);
-    bool sendData(const std::vector<uint8_t>& data);
+    
 };
