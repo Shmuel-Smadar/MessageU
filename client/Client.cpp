@@ -79,6 +79,11 @@ void Client::registerClient() {
 	currentUser.setName(userInterface.getInput("Enter username: "));
 	
 	std::string publicKey = encryptionManager->getPublicKey();
-	networkManager.connect();
+	if (networkManager.connect() == false)
+		return;
 	networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
+	std::vector<uint8_t> data;
+	networkManager.receiveData(data);
+	networkManager.disconnect();
+	protocolHandler.parseRegistrationResponse(data);
 }

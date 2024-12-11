@@ -9,7 +9,7 @@ public:
     bool connect();
     void disconnect();
     bool sendData(const std::vector<uint8_t>& data);
-
+    bool receiveData(std::vector<uint8_t>& data);
 private:
     std::string IP;
     int port; //TODO: look for better type for the port

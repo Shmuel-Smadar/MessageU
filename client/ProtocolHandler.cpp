@@ -33,9 +33,30 @@ std::vector<uint8_t> ProtocolHandler::buildRegistrationRequest(const CurrentUser
 
     return buffer;
 }
+
 std::vector<uint8_t> ProtocolHandler::buildRequestHeaders(const CurrentUser &currentUser) {
     std::vector<uint8_t> buffer;
     appendString(buffer, currentUser.getClientID());
     buffer.push_back(clientVersion);
     return buffer;
+}
+
+bool ProtocolHandler::parseRegistrationResponse(const std::vector<uint8_t>& data) {
+   
+    parseResponseHeaders(data);
+    return true;
+}
+bool ProtocolHandler::parseResponseHeaders(const std::vector<uint8_t>& data) {
+    ResponseHeader header;
+    header.version = static_cast<uint8_t>(data[0]);
+
+
+    header.code = static_cast<uint16_t>(data[1]) |
+        (static_cast<uint16_t>(data[2]) << 8);
+
+    header.payloadSize = static_cast<uint32_t>(data[3]) |
+        (static_cast<uint32_t>(data[4]) << 8) |
+        (static_cast<uint32_t>(data[5]) << 16) |
+        (static_cast<uint32_t>(data[6]) << 24);
+    return true;
 }
