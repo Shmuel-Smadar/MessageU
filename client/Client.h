@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdexcept>
 #include "CurrentUser.h"
 #include "UserInterface.h"
 #include "UserInfoList.h"

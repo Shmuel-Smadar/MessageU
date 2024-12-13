@@ -72,18 +72,23 @@ void Client::handleUserSelection(int selection) {
 
 
 void Client::registerClient() {
-	if (currentUser.isRegistered()) {
-		userInterface.printMessage("Already registered.");
+	try {
+		if (currentUser.isRegistered()) {
+			userInterface.printMessage("Already registered.");
+			return;
+		}
+		currentUser.setName(userInterface.getInput("Enter username: "));
+
+		std::string publicKey = encryptionManager->getPublicKey();
+		if (networkManager.connect() == false)
+			return;
+		networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
+		std::vector<uint8_t> data;
+		networkManager.receiveData(data);
+		networkManager.disconnect();
+		protocolHandler.parseRegistrationResponse(data);
+	}
+	catch (std::exception& e) {
 		return;
 	}
-	currentUser.setName(userInterface.getInput("Enter username: "));
-	
-	std::string publicKey = encryptionManager->getPublicKey();
-	if (networkManager.connect() == false)
-		return;
-	networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
-	std::vector<uint8_t> data;
-	networkManager.receiveData(data);
-	networkManager.disconnect();
-	protocolHandler.parseRegistrationResponse(data);
 }
