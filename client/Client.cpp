@@ -77,20 +77,45 @@ void Client::registerClient() {
 			userInterface.printMessage("Already registered.");
 			return;
 		}
-		currentUser.setName(userInterface.getInput("Enter username: "));
-		if (currentUser.getName().length() > 254) {
+		if (!currentUser.setName(userInterface.getInput("Enter username: "))) {
 			userInterface.printMessage("Name must not surpass 254 letters.");
 			return;
 		}
 		if (networkManager.connect() == false)
 			return;
 		networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
-		std::vector<uint8_t> data;
-		networkManager.receiveData(data);
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
 		networkManager.disconnect();
-		protocolHandler.parseRegistrationResponse(data, currentUser);
+		protocolHandler.parseRegistrationResponse(response, currentUser);
 	}
 	catch (std::exception& e) {
 		return;
 	}
+}
+
+void Client::requestClientsList() {
+	if (!currentUser.isRegistered()) {
+		userInterface.printMessage("Please register first.");
+		return;
+	}
+	std::vector<uint8_t> request = protocolHandler.buildClientsListRequest(currentUser);
+	if (!networkManager.connect()) {
+		return;
+	}
+	if (!networkManager.sendData(request)) {
+		networkManager.disconnect();
+		return;
+	}
+	std::vector<uint8_t> response;
+	if (!networkManager.receiveData(response)) {
+		userInterface.printMessage("Failed to receive response from server.");
+		networkManager.disconnect();
+		return;
+	}
+	if(!protocolHandler.parseClientsListResponse(response, userInfoList))
+		return; //TODO: rethink using exceptions and when to print errors
+	userInterface.printMessage("Registered clients:");
+	userInfoList.printUsers();
+	networkManager.disconnect();
 }

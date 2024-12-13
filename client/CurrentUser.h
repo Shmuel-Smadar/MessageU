@@ -28,7 +28,7 @@ public:
     void setRegistered(bool status);
 
     std::string getName() const;
-    void setName(const std::string& name);
+    bool setName(const std::string& name);
 
     std::string getClientID() const;
     void setClientID(const std::string& ClientID);

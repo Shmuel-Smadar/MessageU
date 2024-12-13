@@ -19,8 +19,9 @@ private:
     void handleUserSelection(int selection);
     void checkRegistration();
     void registerClient();
-    /*TODO:
     void requestClientsList();
+
+    /*TODO:
     void requestPublicKey();
     void requestWaitingMessages();
     void sendTextMessage();

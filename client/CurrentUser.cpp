@@ -24,8 +24,11 @@ std::string CurrentUser::getName() const {
     return name;
 }
 
-void CurrentUser::setName(const std::string& name) {
+bool CurrentUser::setName(const std::string& name) {
+    if (name.length() > 254)
+        return false;
     this->name = name;
+    return true;
 }
 
 std::string CurrentUser::getClientID() const {
