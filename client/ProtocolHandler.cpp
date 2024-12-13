@@ -36,15 +36,17 @@ std::vector<uint8_t> ProtocolHandler::buildRegistrationRequest(const CurrentUser
 
 std::vector<uint8_t> ProtocolHandler::buildRequestHeaders(const CurrentUser &currentUser) {
     std::vector<uint8_t> buffer;
-    appendString(buffer, currentUser.getClientID());
     buffer.push_back(clientVersion);
     return buffer;
 }
 
-bool ProtocolHandler::parseRegistrationResponse(const std::vector<uint8_t>& data) {
+bool ProtocolHandler::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
    
-    parseResponseHeaders(data);
-    return true;
+    if (parseResponseHeaders(data)) {
+        currentUser.setClientID(std::string(data.begin() + 7, data.begin() + 23));
+        return true;
+    }
+    return false;
 }
 bool ProtocolHandler::parseResponseHeaders(const std::vector<uint8_t>& data) {
     ResponseHeader header;
@@ -58,5 +60,7 @@ bool ProtocolHandler::parseResponseHeaders(const std::vector<uint8_t>& data) {
         (static_cast<uint32_t>(data[4]) << 8) |
         (static_cast<uint32_t>(data[5]) << 16) |
         (static_cast<uint32_t>(data[6]) << 24);
+    if (header.code == 9000)
+        return false;
     return true;
 }

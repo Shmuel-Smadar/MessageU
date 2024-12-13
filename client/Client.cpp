@@ -86,7 +86,7 @@ void Client::registerClient() {
 		std::vector<uint8_t> data;
 		networkManager.receiveData(data);
 		networkManager.disconnect();
-		protocolHandler.parseRegistrationResponse(data);
+		protocolHandler.parseRegistrationResponse(data, currentUser);
 	}
 	catch (std::exception& e) {
 		return;

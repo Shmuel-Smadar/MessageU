@@ -27,6 +27,6 @@ private:
 public:
 	std::vector<uint8_t> buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey);
     std::vector<uint8_t> buildRequestHeaders(const CurrentUser &currentUser);
-    bool parseRegistrationResponse(const std::vector<uint8_t>& data);
+    bool parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser);
    
 };
