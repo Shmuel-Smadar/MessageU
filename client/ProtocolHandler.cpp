@@ -15,16 +15,21 @@ void appendUint32(std::vector<uint8_t>& buffer, uint32_t value) {
 }
 
 /*TODO: 
-1. create seperate function for pushing the clientID and client version into the buffer.
-2. make sure the user cant input name that is longer than 255 bytes.
-3. see how you can push the name into the buffer with some garbage values maybe if the name is shorter than 255 bytes.*/
+1. make sure the user cant input name that is longer than 255 bytes.
+2. see how you can push the name into the buffer with some garbage values maybe if the name is shorter than 255 bytes.*/
 std::vector<uint8_t> ProtocolHandler::buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     
     appendUint16(buffer, static_cast<uint16_t>(RequestType::Registration));
 
     std::vector<uint8_t> payload;
-    appendString(payload, currentUser.getName() + '\0');
+
+    appendString(payload, currentUser.getName());
+
+    size_t paddingSize = 255 - currentUser.getName().length();
+    std::vector<uint8_t> padding(paddingSize, '\0');
+
+    payload.insert(payload.end(), padding.begin(), padding.end());
     appendString(payload, publicKey);
 
     appendUint32(buffer, static_cast<uint32_t>(payload.size()));
@@ -44,6 +49,7 @@ bool ProtocolHandler::parseRegistrationResponse(const std::vector<uint8_t>& data
    
     if (parseResponseHeaders(data)) {
         currentUser.setClientID(std::string(data.begin() + 7, data.begin() + 23));
+        currentUser.setRegistered(true);
         return true;
     }
     return false;

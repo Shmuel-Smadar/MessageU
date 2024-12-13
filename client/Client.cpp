@@ -78,8 +78,10 @@ void Client::registerClient() {
 			return;
 		}
 		currentUser.setName(userInterface.getInput("Enter username: "));
-
-		std::string publicKey = encryptionManager->getPublicKey();
+		if (currentUser.getName().length() > 254) {
+			userInterface.printMessage("Name must not surpass 254 letters.");
+			return;
+		}
 		if (networkManager.connect() == false)
 			return;
 		networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));

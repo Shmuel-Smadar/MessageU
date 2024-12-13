@@ -16,7 +16,7 @@ def get_port():
                 port = int(f.read().strip())
                 return port
             except ValueError:
-                print("Invalid port number in myport.info. Using default port 1357.")
+                print(f"Invalid port number in myport.info. Using default port {DEFAULT_PORT}.")
     else:
         print(f"Port file {PORT_FILE} not found. Using default port {DEFAULT_PORT}.")
     return DEFAULT_PORT
