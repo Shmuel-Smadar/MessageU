@@ -1,9 +1,8 @@
 import socket
 import selectors
-import struct
 import os
 from database import Database
-from parser import parse_request
+from protocol import Protocol
 
 DEFAULT_PORT = 1357
 IP = '127.0.0.1'
@@ -69,7 +68,7 @@ def handle_read(sock, data, sel, db):
     recv_data = sock.recv(4096)
     if recv_data:
         data['request'] += recv_data
-        process_requests(data, db)
+        Protocol.process_requests(data, db)
     else:
         print(f"Closing connection to {data['address']}")
         sel.unregister(sock)
@@ -84,26 +83,6 @@ def handle_write(sock, data, sel):
             print(f"Connection reset by {data['address']}")
             sel.unregister(sock)
             sock.close()
-
-# Maybe should be moved to protocol.py
-def process_requests(data, db):
-    while True:
-        if len(data['request']) < 7:
-            break
-        version, code, payload_size = struct.unpack('<BHI', data['request'][:7])
-        total_size = 7 + payload_size
-        if len(data['request']) < total_size:
-            break
-        payload = data['request'][7:total_size]
-        request = {
-            'version': version,
-            'code': code,
-            'payload_size': payload_size,
-            'payload': payload,
-        }
-        response = parse_request(request, db)
-        data['response'] += response
-        data['request'] = data['request'][total_size:]
 
 
 if __name__ == "__main__":
