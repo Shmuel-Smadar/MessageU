@@ -32,9 +32,8 @@ class Protocol:
         version = request['version']
         payload = request['payload']
         if code == ClientCodes.REGISTRATION: 
-            return self.request_parser.handle_registration(payload, db)
+            return self.request_parser.registration(payload, db)
         elif code == ClientCodes.CLIENT_LIST:
-            return self.request_parser.send_client_list(payload, db)
-
+            return self.request_parser.client_list(payload, db)
         else:
             return
