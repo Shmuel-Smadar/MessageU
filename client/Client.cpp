@@ -45,7 +45,7 @@ void Client::handleUserSelection(int selection) {
 		registerClient();
 		break;
 	case 2:
-		//requestClientsList();
+		requestClientsList();
 		break;
 	case 3:
 		//requestPublicKey();

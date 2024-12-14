@@ -16,6 +16,7 @@ void appendUint32(std::vector<uint8_t>& buffer, uint32_t value) {
 
 std::vector<uint8_t> ProtocolHandler::buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
+    appendString(buffer, "0000000000000000"); //Empty clientID
     appendUint16(buffer, static_cast<uint16_t>(RequestType::Registration));
 
     std::vector<uint8_t> payload;
@@ -44,7 +45,7 @@ bool ProtocolHandler::parseRegistrationResponse(const std::vector<uint8_t>& data
 
 std::vector<uint8_t> ProtocolHandler::buildClientsListRequest(CurrentUser& currentUser) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
-    appendUint16(buffer, 120);
+    appendUint16(buffer, RequestType::ClientList);
 
     std::vector<uint8_t> payload;
     appendString(payload, currentUser.getClientID());
@@ -64,7 +65,7 @@ bool ProtocolHandler::parseClientsListResponse(const std::vector<uint8_t>& data,
 
             std::string clientName(data.begin() + pos, data.begin() + pos + ProtocolSizes::ClientName);
             pos += ProtocolSizes::ClientName;
-            userInfoList.addUser(clientId, clientName);
+            userInfoList.addUser(Utils::bytesToHex(clientId), clientName);
         }
         return true;
     }
