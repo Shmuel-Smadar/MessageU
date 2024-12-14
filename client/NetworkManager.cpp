@@ -22,7 +22,12 @@ bool NetworkManager::connect() {
 }
 
 void NetworkManager::disconnect() {
+    try {
     socket.close();
+    }
+    catch (std::exception& e) {
+        std::cerr << "Network disconnection error: " << e.what() << std::endl;
+    }
 }
 
 bool NetworkManager::readServerInfo(const std::string& filename) {

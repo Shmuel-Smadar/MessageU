@@ -74,6 +74,9 @@ bool ProtocolHandler::parseClientsListResponse(const std::vector<uint8_t>& data,
 
 
 bool ProtocolHandler::parseResponseHeaders(const std::vector<uint8_t>& data) {
+    if (data.size() < 7) {
+        return false;
+    }
     ResponseHeader header;
     header.version = static_cast<uint8_t>(data[0]);
     header.code = static_cast<uint16_t>(data[1]) |
