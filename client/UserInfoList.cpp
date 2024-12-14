@@ -37,8 +37,7 @@ void UserInfoList::addUser(const std::string& clientID, const std::string& name)
 
 void UserInfoList::printUsers() {
     for (const auto& user : userInfoList) {
-        std::cout << user.getName() << std::endl;
-        std::cout << user.getClientID() << std::endl;
+        std::cout << "Name: " << user.getName() << " ID: " << user.getClientID() << std::endl;
     }
 
 }
