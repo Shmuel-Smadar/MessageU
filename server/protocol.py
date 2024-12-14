@@ -1,11 +1,13 @@
 import struct
 from constants import ProtocolLengths
 from constants import ServerCodes
-from parser import parse_request
-
+from request_parser import RequestParser
+from constants import ClientCodes
 class Protocol:
-
-    def process_requests(data, db):
+    def __init__(self):
+        self.request_parser = RequestParser()
+        
+    def process_requests(self, data, db):
         if len(data['request']) < ProtocolLengths.HEADER:
             return
         clientID, version, code, payload_size = struct.unpack('<16sBHI', data['request'][:ProtocolLengths.HEADER])
@@ -20,7 +22,19 @@ class Protocol:
             'payload_size': payload_size,
             'payload': payload,
         }
-        response = parse_request(request, db)
+        response = self.parse_request(request, db)
         data['response'] += response
         data['request'] = data['request'][total_size:]
     
+    def parse_request(self, request, db):
+        clientID = request['clientID']
+        code = request['code']
+        version = request['version']
+        payload = request['payload']
+        if code == ClientCodes.REGISTRATION: 
+            return self.request_parser.handle_registration(payload, db)
+        elif code == ClientCodes.CLIENT_LIST:
+            return self.request_parser.send_client_list(payload, db)
+
+        else:
+            return

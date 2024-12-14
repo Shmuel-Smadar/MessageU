@@ -26,6 +26,7 @@ def main():
     print(f"Starting server on port {port}...")
 
     db = Database()
+    protocol = Protocol()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(server_address)
     sock.listen()
@@ -42,7 +43,7 @@ def main():
                 if key.data is None:
                     accept_connection(key.fileobj, sel) # New connection
                 else:
-                    service_connection(key, mask, sel, db) # Existing connection
+                    service_connection(key, mask, sel, db, protocol) # Existing connection
     except KeyboardInterrupt:
         print("Server is shutting down.")
     finally:
@@ -56,19 +57,19 @@ def accept_connection(sock, sel):
     data = {'address': address, 'request': b'', 'response': b''}
     sel.register(conn, selectors.EVENT_READ | selectors.EVENT_WRITE, data=data)
 
-def service_connection(key, mask, sel, db):
+def service_connection(key, mask, sel, db, protocol):
     sock = key.fileobj
     data = key.data
     if mask & selectors.EVENT_READ:
-        handle_read(sock, data, sel, db)
+        handle_read(sock, data, sel, db, protocol)
     if mask & selectors.EVENT_WRITE:
         handle_write(sock, data, sel)
 
-def handle_read(sock, data, sel, db):
+def handle_read(sock, data, sel, db, protocol):
     recv_data = sock.recv(4096)
     if recv_data:
         data['request'] += recv_data
-        Protocol.process_requests(data, db)
+        protocol.process_requests(data, db)
     else:
         print(f"Closing connection to {data['address']}")
         sel.unregister(sock)
