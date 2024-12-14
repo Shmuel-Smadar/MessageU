@@ -26,13 +26,13 @@ def handle_registration(payload, db):
         if len(public_key) != ProtocolLengths.PUBLIC_KEY:
             raise ValueError("Invalid public key length in registration payload")
         if db.client_exists(name):
-            return Protocol.build_response(ServerCodes.VERSION, ServerCodes.ERROR, b'')
+            return Protocol.build_response(ServerCodes.ERROR, b'')
 
         client_id = uuid.uuid4().hex[:32]
         client = Client(ID=client_id, UserName=name, PublicKey=public_key, LastSeen=time.time())
         db.add_client(client)
         payload = bytes.fromhex(client_id)
-        return Protocol.build_response(ServerCodes.VERSION, ServerCodes.REGISTRATION_SUCCESSFUL, payload)
+        return Protocol.build_response(ServerCodes.REGISTRATION_SUCCESSFUL, payload)
     except Exception as e:
         print(f"Error in handle_registration: {e}")
-        return Protocol.build_response(ServerCodes.VERSION, ServerCodes.ERROR, b'')
+        return Protocol.build_response(ServerCodes.ERROR, b'')

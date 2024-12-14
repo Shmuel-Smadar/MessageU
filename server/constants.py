@@ -9,3 +9,4 @@ class ServerCodes:
 class ProtocolLengths:
     NAME = 255
     PUBLIC_KEY = 160
+    HEADER = 7
