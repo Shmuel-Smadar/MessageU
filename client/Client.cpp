@@ -99,6 +99,8 @@ void Client::requestClientsList() {
 		userInterface.printMessage("Please register first.");
 		return;
 	}
+	
+
 	std::vector<uint8_t> request = protocolHandler.buildClientsListRequest(currentUser);
 	if (!networkManager.connect()) {
 		return;
@@ -119,3 +121,50 @@ void Client::requestClientsList() {
 	userInfoList.printUsers();
 	networkManager.disconnect();
 }
+
+
+/*void Client::requestPublicKey() {
+	if (!currentUser.isRegistered()) {
+		userInterface.printMessage("Please register first.");
+		return;
+	}
+	UserInfo* requestedUser;
+	std::string targetName = userInterface.getInput("Enter username to request public key: ");
+	requestedUser = userInfoList.getUserByName(targetName);
+	if (requestedUser == nullptr) {
+		userInterface.printMessage("User not found. Please request the clients list first.");
+		return;
+	}
+	//std::vector<uint8_t> request = protocolHandler.buildPublicKeyRequest(localUser.getClientID(), targetID);
+	if (!networkManager.connect()) {
+		userInterface.printMessage("Unable to connect to server.");
+		return;
+	}
+	if (!networkManager.sendData(request)) {
+		userInterface.printMessage("Failed to send public key request.");
+		networkManager.disconnect();
+		return;
+	}
+	std::vector<uint8_t> response;
+	if (!networkManager.receive(response)) {
+		userInterface.printMessage("Failed to receive response from server.");
+		networkManager.disconnect();
+		return;
+	}
+
+	uint16_t responseCode = protocolHandler.getResponseCode(response);
+	if (responseCode == 2102) {
+		std::string publicKey;
+		if (protocolHandler.parsePublicKeyResponse(response, publicKey)) {
+			requestedUser->setPublicKey(publicKey);
+			userInterface.printMessage("Public key received and stored.");
+		}
+		else {
+			userInterface.printMessage("Failed to parse public key response.");
+		}
+	}
+	else {
+		userInterface.printMessage("Server responded with an error.");
+	}
+	networkManager.disconnect();
+}*/

@@ -20,9 +20,9 @@ private:
     void checkRegistration();
     void registerClient();
     void requestClientsList();
+    void requestPublicKey();
 
     /*TODO:
-    void requestPublicKey();
     void requestWaitingMessages();
     void sendTextMessage();
     void sendSymmetricKeyRequest();

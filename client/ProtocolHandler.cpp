@@ -48,8 +48,6 @@ std::vector<uint8_t> ProtocolHandler::buildClientsListRequest(CurrentUser& curre
     appendUint16(buffer, RequestType::ClientList);
 
     std::vector<uint8_t> payload;
-    appendString(payload, currentUser.getClientID());
-
     appendUint32(buffer, static_cast<uint32_t>(payload.size()));
     buffer.insert(buffer.end(), payload.begin(), payload.end());
     return buffer;
