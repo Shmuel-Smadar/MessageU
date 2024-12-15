@@ -21,7 +21,6 @@ class ResponseBuilder:
             return self.build_response(ServerCodes.ERROR, b'')
     
     def build_client_list(self, client_id, db):
-        db.update_last_seen(client_id)
         clients = db.get_clients(client_id)
         response_payload = b''
         for c in clients:
@@ -32,9 +31,12 @@ class ResponseBuilder:
             name_padded = name_bytes.ljust(255, b'\0')
             response_payload += client_id_bytes + name_padded
         return self.build_response(ServerCodes.RETURNED_CLIENT_LIST, response_payload)
-            
+    
+    def build_public_key_response(self, public_key):
+        return self.build_response(ServerCodes.RETURNED_PUBLIC_KEY, public_key)
+        
     def build_error_response(self):
-        self.build_response(ServerCodes.ERROR, b'')
+        return self.build_response(ServerCodes.ERROR, b'')
     
     def build_response(self, code, payload):
         payload_size = len(payload)
