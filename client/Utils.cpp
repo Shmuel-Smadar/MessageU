@@ -5,6 +5,20 @@
 
 namespace Utils {
 
+    void Utils::appendUint16(std::vector<uint8_t>& buffer, uint16_t value) {
+        buffer.push_back(value & 0xFF);
+        buffer.push_back((value >> 8) & 0xFF);
+    }
+    void Utils::appendString(std::vector<uint8_t>& buffer, const std::string& str) {
+        buffer.insert(buffer.end(), str.begin(), str.end());
+    }
+    void Utils::appendUint32(std::vector<uint8_t>& buffer, uint32_t value) {
+        buffer.push_back(value & 0xFF);
+        buffer.push_back((value >> 8) & 0xFF);
+        buffer.push_back((value >> 16) & 0xFF);
+        buffer.push_back((value >> 24) & 0xFF);
+    }
+
     std::string Utils::bytesToHex(const std::string& bytes) {
         std::ostringstream oss;
         for (unsigned char byte : bytes) {

@@ -21,7 +21,7 @@ std::string EncryptionManager::getPrivateKey() const
     return rsaPrivate.getPrivateKey();
 }
 
-void EncryptionManager::storePublicKey(std::string& clientID, std::string& key) {
+void EncryptionManager::storePublicKey(const std::string& clientID, std::string& key) {
     publicKeys.emplace(clientID, key);
 }
 

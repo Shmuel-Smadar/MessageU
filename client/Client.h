@@ -6,8 +6,8 @@
 #include "Utils.h"
 #include "EncryptionManager.h"
 #include "NetworkManager.h"
-#include "ProtocolHandler.h"
-
+#include "RequestBuilder.h"
+#include "ResponseParser.h"
 
 class Client {
 public:
@@ -29,12 +29,11 @@ private:
     void sendOwnSymmetricKey();
     void exitClient();*/
 
-
-    
+    RequestBuilder requestBuilder;
+    ResponseParser responseParser;
     UserInterface userInterface;
     NetworkManager networkManager;
     UserInfoList userInfoList;
     CurrentUser currentUser;
-    ProtocolHandler protocolHandler;
     std::unique_ptr<EncryptionManager> encryptionManager;
 };

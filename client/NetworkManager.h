@@ -6,10 +6,10 @@
 class NetworkManager {
 public:
     NetworkManager();
-    bool connect();
+    void connect();
     void disconnect();
-    bool sendData(const std::vector<uint8_t>& data);
-    bool receiveData(std::vector<uint8_t>& data);
+    void sendData(const std::vector<uint8_t>& data);
+    void receiveData(std::vector<uint8_t>& data);
 private:
     std::string IP;
     int port; //TODO: look for better type for the port

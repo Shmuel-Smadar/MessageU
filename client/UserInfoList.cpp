@@ -29,9 +29,7 @@ void UserInfoList::addUser(const std::string& clientID, const std::string& name)
             return;
         }
     }
-
     UserInfo newUser(name, clientID);
-    printUsers();
     userInfoList.push_back(newUser);
 }
 

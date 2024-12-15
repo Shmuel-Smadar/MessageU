@@ -6,7 +6,8 @@ Client::Client()
 	userInfoList(),
 	currentUser(),
 	networkManager(),
-	protocolHandler(),
+	requestBuilder(),
+	responseParser(),
 	encryptionManager(nullptr) {
 	checkRegistration();
 }
@@ -81,13 +82,12 @@ void Client::registerClient() {
 			userInterface.printMessage("Name must not surpass 254 letters.");
 			return;
 		}
-		if (networkManager.connect() == false)
-			return;
-		networkManager.sendData(protocolHandler.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
+		networkManager.connect();
+		networkManager.sendData(requestBuilder.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey()));
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
 		networkManager.disconnect();
-		protocolHandler.parseRegistrationResponse(response, currentUser);
+		responseParser.parseRegistrationResponse(response, currentUser);
 	}
 	catch (std::exception& e) {
 		return;
@@ -95,35 +95,32 @@ void Client::registerClient() {
 }
 
 void Client::requestClientsList() {
-	if (!currentUser.isRegistered()) {
-		userInterface.printMessage("Please register first.");
-		return;
-	}
-	
 
-	std::vector<uint8_t> request = protocolHandler.buildClientsListRequest(currentUser);
-	if (!networkManager.connect()) {
-		return;
-	}
-	if (!networkManager.sendData(request)) {
+	try {
+		if (!currentUser.isRegistered()) {
+			userInterface.printMessage("Please register first.");
+			return;
+		}
+		std::vector<uint8_t> request = requestBuilder.buildClientsListRequest(currentUser);
+		networkManager.connect();
+		networkManager.sendData(request);
+
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
+
+		if (!responseParser.parseClientsListResponse(response, userInfoList))
+			return; //TODO: rethink using exceptions and when to print errors
+		userInterface.printMessage("Registered clients:");
+		userInfoList.printUsers();
 		networkManager.disconnect();
-		return;
 	}
-	std::vector<uint8_t> response;
-	if (!networkManager.receiveData(response)) {
-		userInterface.printMessage("Failed to receive response from server.");
-		networkManager.disconnect();
-		return;
+	catch (std::exception e) {
+		e.what();
 	}
-	if(!protocolHandler.parseClientsListResponse(response, userInfoList))
-		return; //TODO: rethink using exceptions and when to print errors
-	userInterface.printMessage("Registered clients:");
-	userInfoList.printUsers();
-	networkManager.disconnect();
 }
 
 
-/*void Client::requestPublicKey() {
+void Client::requestPublicKey() {
 	if (!currentUser.isRegistered()) {
 		userInterface.printMessage("Please register first.");
 		return;
@@ -135,36 +132,13 @@ void Client::requestClientsList() {
 		userInterface.printMessage("User not found. Please request the clients list first.");
 		return;
 	}
-	//std::vector<uint8_t> request = protocolHandler.buildPublicKeyRequest(localUser.getClientID(), targetID);
-	if (!networkManager.connect()) {
-		userInterface.printMessage("Unable to connect to server.");
-		return;
-	}
-	if (!networkManager.sendData(request)) {
-		userInterface.printMessage("Failed to send public key request.");
-		networkManager.disconnect();
-		return;
-	}
-	std::vector<uint8_t> response;
-	if (!networkManager.receive(response)) {
-		userInterface.printMessage("Failed to receive response from server.");
-		networkManager.disconnect();
-		return;
-	}
+	std::vector<uint8_t> request = requestBuilder.buildPublicKeyRequest(currentUser, requestedUser);
+	networkManager.connect();
+	networkManager.sendData(request);
 
-	uint16_t responseCode = protocolHandler.getResponseCode(response);
-	if (responseCode == 2102) {
-		std::string publicKey;
-		if (protocolHandler.parsePublicKeyResponse(response, publicKey)) {
-			requestedUser->setPublicKey(publicKey);
-			userInterface.printMessage("Public key received and stored.");
-		}
-		else {
-			userInterface.printMessage("Failed to parse public key response.");
-		}
-	}
-	else {
-		userInterface.printMessage("Server responded with an error.");
-	}
+	std::vector<uint8_t> response;
+	networkManager.receiveData(response);
+
+	responseParser.parsePublicKeyResponse(response, *requestedUser, *encryptionManager);
 	networkManager.disconnect();
-}*/
+}

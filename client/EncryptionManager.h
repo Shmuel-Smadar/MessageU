@@ -27,7 +27,7 @@ public:
     std::string getPrivateKey() const;
     
     std::string encryptWithPublicKey(const std::string& clientID, const std::string& message);
-    void storePublicKey(std::string& clientID, std::string& key);
+    void storePublicKey(const std::string& clientID, std::string& key);
     std::string decryptWithPrivateKey(const std::string& cipher);
 
     void generateSymmetricKey(const std::string& clientID);
