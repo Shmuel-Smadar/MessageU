@@ -19,8 +19,7 @@ class RequestParser:
         return self.response_builder.build_registration_response(name, public_key, db)
         
     
-    def client_list(self, payload, db):
-        client_id = payload[:16].hex()
+    def client_list(self, client_id, db):
         client = db.get_client_by_id(client_id)
         if not client:
             return self.response_builder.build_error_response()

@@ -10,30 +10,17 @@ class Protocol:
     def process_requests(self, data, db):
         if len(data['request']) < ProtocolLengths.HEADER:
             return
-        clientID, version, code, payload_size = struct.unpack('<16sBHI', data['request'][:ProtocolLengths.HEADER])
+        client_id, version, code, payload_size = struct.unpack('<16sBHI', data['request'][:ProtocolLengths.HEADER])
         total_size = ProtocolLengths.HEADER + payload_size
         if len(data['request']) < total_size:
             return
         payload = data['request'][ProtocolLengths.HEADER:total_size]
-        request = {
-            'clientID': clientID,
-            'version': version,
-            'code': code,
-            'payload_size': payload_size,
-            'payload': payload,
-        }
-        response = self.parse_request(request, db)
-        data['response'] += response
-        data['request'] = data['request'][total_size:]
-    
-    def parse_request(self, request, db):
-        clientID = request['clientID']
-        code = request['code']
-        version = request['version']
-        payload = request['payload']
         if code == ClientCodes.REGISTRATION: 
-            return self.request_parser.registration(payload, db)
+            response = self.request_parser.registration(payload, db)
         elif code == ClientCodes.CLIENT_LIST:
-            return self.request_parser.client_list(payload, db)
+            response = self.request_parser.client_list(client_id.hex(), db) 
         else:
             return
+        data['response'] += response
+        data['request'] = data['request'][total_size:]
+        
