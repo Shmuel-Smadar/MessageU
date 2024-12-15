@@ -15,8 +15,7 @@ UserInfo* UserInfoList::getUserByID(const std::string& clientID) {
 
 UserInfo* UserInfoList::getUserByName(const std::string& name) {
     for (UserInfo& user : userInfoList) {
-        std::string n = user.getName();
-        if (name == n) {
+        if (!name.compare(user.getName())) {
             return &user;
         }
     }
@@ -29,6 +28,7 @@ void UserInfoList::addUser(const std::string& clientID, const std::string& name)
             return;
         }
     }
+
     UserInfo newUser(name, clientID);
     userInfoList.push_back(newUser);
 }

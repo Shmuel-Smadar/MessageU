@@ -71,3 +71,9 @@ namespace Utils {
         return negate ? result : -result;
     }
 }
+std::string Utils::trimAfterNull(const std::string& str) {
+    size_t pos = str.find('\0');
+    if (pos != std::string::npos)
+        return str.substr(0, pos);
+    return str;
+}

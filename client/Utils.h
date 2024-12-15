@@ -12,4 +12,5 @@ namespace Utils {
     void appendUint16(std::vector<uint8_t>& buffer, uint16_t value);
     void appendString(std::vector<uint8_t>& buffer, const std::string& str);
     void appendUint32(std::vector<uint8_t>& buffer, uint32_t value);
+    std::string trimAfterNull(const std::string& str);
 }

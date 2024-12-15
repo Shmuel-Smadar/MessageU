@@ -23,7 +23,7 @@ bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 
             std::string clientName(data.begin() + pos, data.begin() + pos + ProtocolSizes::ClientName);
             pos += ProtocolSizes::ClientName;
-            userInfoList.addUser(Utils::bytesToHex(clientId), clientName);
+            userInfoList.addUser(Utils::bytesToHex(clientId), Utils::trimAfterNull(clientName));
         }
         return true;
     }

@@ -49,7 +49,7 @@ void Client::handleUserSelection(int selection) {
 		requestClientsList();
 		break;
 	case 3:
-		//requestPublicKey();
+		requestPublicKey();
 		break;
 	case 4:
 		//requestWaitingMessages();
