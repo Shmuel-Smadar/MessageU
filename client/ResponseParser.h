@@ -15,7 +15,9 @@ namespace ProtocolSizes {
 	constexpr size_t ClientName = 255;
 	constexpr size_t ClientId = 16;
 };
-
+namespace ServerCodes {
+	uint16_t Error = 9000;
+}
 struct ResponseHeader {
 	uint8_t version;
 	uint16_t code;

@@ -1,8 +1,5 @@
 #include "ResponseParser.h"
 
-
-
-
 bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
 
     if (parseResponseHeaders(data)) {
@@ -33,7 +30,8 @@ bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 
 
 bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo, EncryptionManager& encryptionManager) {
-    if (data.size() < 7 + 160) return false;
+    if (data.size() < 7 + 160)
+        return false;
     std::string publicKey = std::string(data.begin() + 7, data.begin() + 7 + 160);
     encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
     return true;
@@ -51,7 +49,7 @@ bool ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
         (static_cast<uint32_t>(data[4]) << 8) |
         (static_cast<uint32_t>(data[5]) << 16) |
         (static_cast<uint32_t>(data[6]) << 24);
-    if (header.code == 9000)
+    if (header.code == ServerCodes::Error)
         return false;
     return true;
 }
