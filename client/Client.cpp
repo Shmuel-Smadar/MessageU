@@ -64,7 +64,7 @@ void Client::handleUserSelection(int selection) {
 		//sendTextMessage();
 		break;
 	case 6:
-		//sendSymmetricKeyRequest();
+		sendSymmetricKeyRequest();
 		break;
 	case 7:
 		//sendOwnSymmetricKey();
@@ -127,13 +127,8 @@ void Client::requestClientsList() {
 }
 
 void Client::requestPublicKey() {
-	if (!currentUser.isRegistered()) {
-		userInterface.printMessage("Please register first.");
-		return;
-	}
-	UserInfo* requestedUser;
 	std::string targetName = userInterface.getInput("Enter username to request public key: ");
-	requestedUser = userInfoList.getUserByName(targetName);
+	UserInfo* requestedUser = userInfoList.getUserByName(targetName);
 	if (requestedUser == nullptr) {
 		userInterface.printMessage("User not found. Please request the clients list first.");
 		return;
@@ -152,11 +147,32 @@ void Client::requestPublicKey() {
 void Client::requestWaitingMessages() {
 	try {
 		networkManager.connect();
-		//std::vector<uint8_t> request = requestBuilder.buildWaitingMessagesRequest(currentUser);
-		//networkManager.sendData(request);
+		std::vector<uint8_t> request = requestBuilder.buildWaitingMessagesRequest(currentUser);
+		networkManager.sendData(request);
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
-		//responseParser.parseWaitingMessagesResponse(response, *encryptionManager);
+		responseParser.parseWaitingMessagesResponse(response, userInfoList, *encryptionManager);
+		networkManager.disconnect();
+	}
+	catch (std::exception e) {
+
+	}
+}
+
+void Client::sendSymmetricKeyRequest() {
+	try {
+		networkManager.connect();
+		std::string targetName = userInterface.getInput("Enter username to request symmetric key: ");
+		UserInfo* requestedUser = userInfoList.getUserByName(targetName);
+		if (requestedUser == nullptr) {
+			userInterface.printMessage("User not found. Please request the clients list first.");
+			return;
+		}
+		std::vector<uint8_t> request = requestBuilder.buildSymmetricKeyRequest(currentUser, requestedUser, *encryptionManager);
+		networkManager.sendData(request);
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
+		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {

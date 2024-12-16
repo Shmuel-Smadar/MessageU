@@ -1,7 +1,7 @@
 #include "Message.h"
 
 
-Message::Message(const std::string& senderClientId, const std::string& messageType, const std::string& content) {
+Message::Message(const std::string& senderClientId, const uint8_t& messageType, const std::string& content) {
 	this->senderClientId = senderClientId;
 	this->messageType = messageType;
 	this->content = content;
@@ -11,7 +11,7 @@ std::string Message::getSenderClientId() const {
 	return senderClientId;
 }
 
-std::string Message::getMessageType() const {
+uint8_t Message::getMessageType() const {
 	return messageType;
 }
 

@@ -22,10 +22,11 @@ private:
     void requestClientsList();
     void requestPublicKey();
     void requestWaitingMessages();
+    void sendSymmetricKeyRequest();
+
     /*TODO:
     
     void sendTextMessage();
-    void sendSymmetricKeyRequest();
     void sendOwnSymmetricKey();
     void exitClient();*/
 

@@ -18,7 +18,12 @@ namespace Utils {
         buffer.push_back((value >> 16) & 0xFF);
         buffer.push_back((value >> 24) & 0xFF);
     }
-
+    void Utils::appendMessage(std::vector<uint8_t>& buffer, const Message& message) {
+        appendString(buffer, message.getSenderClientId());
+        buffer.push_back(message.getMessageType());
+        appendUint32(buffer, static_cast<uint32_t>(message.getContent().size()));
+        appendString(buffer, message.getContent());
+    }
     std::string Utils::bytesToHex(const std::string& bytes) {
         std::ostringstream oss;
         for (unsigned char byte : bytes) {

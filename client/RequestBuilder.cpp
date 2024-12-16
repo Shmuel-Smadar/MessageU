@@ -48,11 +48,22 @@ std::vector<uint8_t> RequestBuilder::buildWaitingMessagesRequest(CurrentUser& cu
     return buffer;
 }
 
+std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo* userInfo, EncryptionManager& encryptionManager) {
+    std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
+    Utils::appendUint16(buffer, RequestType::SendMessage);
+    Message message(userInfo->getClientID(), MessageType::SymmetricKeyRequest, "");
+    Utils::appendMessage(buffer, message);
+    return buffer;
+}
+
+
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
     std::vector<uint8_t> buffer;
     Utils::appendString(buffer, currentUser.getClientID());
     buffer.push_back(clientVersion);
     return buffer;
 }
+
+
 
 
