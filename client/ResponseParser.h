@@ -15,9 +15,7 @@ namespace ProtocolSizes {
 	constexpr size_t ClientName = 255;
 	constexpr size_t ClientId = 16;
 };
-namespace ServerCodes {
-	uint16_t Error = 9000;
-}
+
 struct ResponseHeader {
 	uint8_t version;
 	uint16_t code;
@@ -31,10 +29,11 @@ class ResponseParser {
 private:
 	uint8_t clientVersion = 1;
 
-	bool parseResponseHeaders(const std::vector<uint8_t>& data);
+	std::unique_ptr<ResponseHeader> parseResponseHeaders(const std::vector<uint8_t>& data);
 
 public:
 	bool parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser);
 	bool parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList);
 	bool parsePublicKeyResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo, EncryptionManager& encryptionManager);
+	bool parseWaitingMessagesResponse(const std::vector<uint8_t>& data,UserInfoList& userInfoList, EncryptionManager& encryptionManager);
 };
