@@ -9,7 +9,6 @@
 #include "UserInfoList.h"
 #include "EncryptionManager.h"
 
-
 namespace ProtocolSizes {
 	constexpr size_t Header = 7;
 	constexpr size_t ClientName = 255;
