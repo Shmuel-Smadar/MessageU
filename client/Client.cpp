@@ -41,10 +41,16 @@ void Client::run() {
 }
 
 void Client::handleUserSelection(int selection) {
-	switch (selection) {
-	case 1:
+
+	if (selection == 1) {
 		registerClient();
-		break;
+		return;
+	}
+	else if (!currentUser.isRegistered()) {
+		userInterface.printMessage("Please register first.");
+		return;
+	}
+	switch (selection) {
 	case 2:
 		requestClientsList();
 		break;
@@ -52,7 +58,7 @@ void Client::handleUserSelection(int selection) {
 		requestPublicKey();
 		break;
 	case 4:
-		//requestWaitingMessages();
+		requestWaitingMessages();
 		break;
 	case 5:
 		//sendTextMessage();
@@ -70,6 +76,7 @@ void Client::handleUserSelection(int selection) {
 		userInterface.printMessage("Invalid selection. Please try again.");
 	}
 }
+
 
 
 void Client::registerClient() {
@@ -119,7 +126,6 @@ void Client::requestClientsList() {
 	}
 }
 
-
 void Client::requestPublicKey() {
 	if (!currentUser.isRegistered()) {
 		userInterface.printMessage("Please register first.");
@@ -141,4 +147,19 @@ void Client::requestPublicKey() {
 
 	responseParser.parsePublicKeyResponse(response, *requestedUser, *encryptionManager);
 	networkManager.disconnect();
+}
+
+void Client::requestWaitingMessages() {
+	try {
+		networkManager.connect();
+		//std::vector<uint8_t> request = requestBuilder.buildWaitingMessagesRequest(currentUser);
+		//networkManager.sendData(request);
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
+		//responseParser.parseWaitingMessagesResponse(response, *encryptionManager);
+		networkManager.disconnect();
+	}
+	catch (std::exception e) {
+
+	}
 }

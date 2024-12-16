@@ -21,9 +21,9 @@ private:
     void registerClient();
     void requestClientsList();
     void requestPublicKey();
-
-    /*TODO:
     void requestWaitingMessages();
+    /*TODO:
+    
     void sendTextMessage();
     void sendSymmetricKeyRequest();
     void sendOwnSymmetricKey();

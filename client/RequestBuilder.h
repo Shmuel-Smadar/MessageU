@@ -11,6 +11,7 @@ namespace RequestType {
 	constexpr uint16_t Registration = 600;
 	constexpr uint16_t ClientList = 601;
 	constexpr uint16_t PublicKey = 602;
+	constexpr uint16_t WaitingMessages = 604;
 };
 
 
@@ -25,4 +26,5 @@ public:
 	std::vector<uint8_t> buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey);
 	std::vector<uint8_t> buildClientsListRequest(CurrentUser& currentUser);
 	std::vector<uint8_t> buildPublicKeyRequest(CurrentUser& currentUser, UserInfo* userInfo);
+	std::vector<uint8_t> buildWaitingMessagesRequest(CurrentUser& currentUser);
 };

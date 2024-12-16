@@ -39,7 +39,14 @@ std::vector<uint8_t> RequestBuilder::buildPublicKeyRequest(CurrentUser& currentU
     return buffer;
 }
 
-
+std::vector<uint8_t> RequestBuilder::buildWaitingMessagesRequest(CurrentUser& currentUser) {
+    std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
+    Utils::appendUint16(buffer, RequestType::WaitingMessages);
+    std::vector<uint8_t> payload;
+    Utils::appendUint32(buffer, static_cast<uint32_t>(payload.size()));
+    buffer.insert(buffer.end(), payload.begin(), payload.end());
+    return buffer;
+}
 
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
     std::vector<uint8_t> buffer;
