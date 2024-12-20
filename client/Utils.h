@@ -16,4 +16,5 @@ namespace Utils {
     void appendMessage(std::vector<uint8_t>& buffer, const Message& message);
     std::string trimAfterNull(const std::string& str);
     std::vector<uint8_t> hexStringToBytes(const std::string& hex);
+    void appendToBuffer(std::vector<uint8_t>& buffer, const std::vector<uint8_t>& source);
 }

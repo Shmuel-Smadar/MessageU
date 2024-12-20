@@ -110,3 +110,7 @@ std::vector<uint8_t> Utils::hexStringToBytes(const std::string& hex) {
     }
     return bytes;
 }
+
+void Utils::appendToBuffer(std::vector<uint8_t>& buffer, const std::vector<uint8_t>& source) {
+    buffer.insert(buffer.end(), source.begin(), source.end());
+}

@@ -33,7 +33,7 @@ std::vector<uint8_t> RequestBuilder::buildPublicKeyRequest(CurrentUser& currentU
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::PublicKey);
     std::vector<uint8_t> payload;
-    Utils::appendString(payload, userInfo->getClientID());
+    Utils::appendToBuffer(payload, Utils::hexStringToBytes(userInfo->getClientID()));
     Utils::appendUint32(buffer, static_cast<uint32_t>(payload.size()));
     buffer.insert(buffer.end(), payload.begin(), payload.end());
     return buffer;
