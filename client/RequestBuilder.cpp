@@ -58,8 +58,7 @@ std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& curre
 
 
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
-    std::vector<uint8_t> buffer;
-    Utils::appendString(buffer, currentUser.getClientID());
+    std::vector<uint8_t> buffer = Utils::hexStringToBytes(currentUser.getClientID());
     buffer.push_back(clientVersion);
     return buffer;
 }

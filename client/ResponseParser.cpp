@@ -9,7 +9,8 @@ bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data,
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	if (header == nullptr)
 		return false;
-	currentUser.setClientID(std::string(data.begin() + 7, data.begin() + 23));
+	std::string clientID(data.begin() + 7, data.begin() + 23);
+	currentUser.setClientID(Utils::bytesToHex(clientID));
 	currentUser.setRegistered(true);
 	return true;
 }
