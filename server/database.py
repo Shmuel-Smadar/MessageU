@@ -1,6 +1,6 @@
 import sqlite3
 from typing import List, Optional
-from classes import Client
+from classes import Client, Message
 
 DATABASE_FILE = 'MessageU-server.db'
 
@@ -20,6 +20,17 @@ class Database:
                     LastSeen TIMESTAMP NOT NULL
                 )
             ''')
+            self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS messages (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ToClient TEXT NOT NULL,
+                FromClient TEXT NOT NULL,
+                Type INTEGER NOT NULL,
+                Content BLOB NOT NULL,
+                FOREIGN KEY (ToClient) REFERENCES clients(ID),
+                FOREIGN KEY (FromClient) REFERENCES clients(ID)
+            )
+        ''')
 
     def client_exists(self, username: str) -> bool:
         with self.conn:
@@ -77,6 +88,25 @@ class Database:
                 SET LastSeen = CURRENT_TIMESTAMP
                 WHERE ID = ?
             ''', (client_id,))
+
+    def add_message(self, message: Message):
+        with self.conn:
+            self.conn.execute('''
+                INSERT INTO messages (ToClient, FromClient, Type, Content)
+                VALUES (?, ?, ?, ?)
+            ''', (message.ToClient, message.FromClient, message.Type, message.Content))
+
+    def get_messages_for_client(self, client_id: str) -> List[Message]:
+        with self.conn:
+            rows = self.conn.execute(
+                'SELECT * FROM messages WHERE ToClient = ?', (client_id,)
+            ).fetchall()
+        return [Message(**row) for row in rows]
+
+    def delete_message(self, message_id: int):
+        with self.conn:
+            self.conn.execute('DELETE FROM messages WHERE ID = ?', (message_id,))
+
 
     def close(self):
         self.conn.close()
