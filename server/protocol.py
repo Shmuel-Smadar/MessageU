@@ -21,6 +21,8 @@ class Protocol:
             response = self.request_parser.client_list(client_id.hex(), db) 
         elif code == ClientCodes.PUBLIC_KEY:
             response = self.request_parser.public_key(client_id.hex(), payload, db)
+        elif code == ClientCodes.MESSAGE_SENT:
+             response = self.request_parser.message_sent(client_id.hex(), payload, db)
         else:
             return
         data['response'] += response

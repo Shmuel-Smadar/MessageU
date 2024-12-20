@@ -2,12 +2,14 @@ class ClientCodes:
     REGISTRATION = 600
     CLIENT_LIST = 601
     PUBLIC_KEY = 602
+    MESSAGE_SENT = 603
 
 class ServerCodes:
     VERSION = 1
     REGISTRATION_SUCCESSFUL = 2100
     RETURNED_CLIENT_LIST = 2101
     RETURNED_PUBLIC_KEY = 2102
+    MESSAGE_SENT = 2103
     ERROR = 9000
 
 class ProtocolLengths:

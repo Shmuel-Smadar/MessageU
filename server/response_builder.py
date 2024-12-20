@@ -34,6 +34,10 @@ class ResponseBuilder:
     
     def build_public_key_response(self, public_key):
         return self.build_response(ServerCodes.RETURNED_PUBLIC_KEY, public_key)
+    
+    def build_public_message_sent_response(self, to_client_id):
+        payload = bytes.fromhex(to_client_id)
+        return self.build_response(ServerCodes.MESSAGE_SENT, payload)
         
     def build_error_response(self):
         return self.build_response(ServerCodes.ERROR, b'')
