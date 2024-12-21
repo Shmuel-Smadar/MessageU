@@ -41,19 +41,36 @@ bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, co
 	return true;
 }
 
-bool ResponseParser::parseWaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
+bool ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
+	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	if (header == nullptr)
+		return false;
+	size_t pos = ProtocolSizes::Header;
+	std::vector<Message> messages;
+	while (pos + 16 + 4 + 1 + 4 <= data.size()) {
+		std::string fromClient(data.begin() + pos, data.begin() + pos + 16);
+		pos += 16;
+		uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + 4));
+		pos += 4;
+		uint8_t messageType = data[pos];
+		pos += 1;
+		uint32_t contentSize = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + 4));
+		pos += 4;
+		std::string content(reinterpret_cast<const char*>(&data[pos]), contentSize);
+		pos += contentSize;
+		messages.emplace_back(fromClient, messageType, content);
+	}
 	return true;
 }
+
+
 //TODO: func name needs changing...
 bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	if (header == nullptr)
 		return false;
 	std::string requestedUserClientId = std::string(data.begin() + 7, data.begin() + 7 + 16);
-	std::cout << Utils::bytesToHex(requestedUserClientId) << std::endl;
 	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
-
-	std::cout << messageID << std::endl;
 }
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
