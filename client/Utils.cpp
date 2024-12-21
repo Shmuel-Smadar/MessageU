@@ -19,7 +19,7 @@ namespace Utils {
         buffer.push_back((value >> 24) & 0xFF);
     }
     void Utils::appendMessage(std::vector<uint8_t>& buffer, const Message& message) {
-        appendString(buffer, message.getSenderClientId());
+        appendToBuffer(buffer, hexStringToBytes(message.getSenderClientId()));
         buffer.push_back(message.getMessageType());
         appendUint32(buffer, static_cast<uint32_t>(message.getContent().size()));
         appendString(buffer, message.getContent());

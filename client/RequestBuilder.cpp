@@ -52,6 +52,7 @@ std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& curre
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::SendMessage);
     Message message(userInfo->getClientID(), MessageType::SymmetricKeyRequest, "");
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
     Utils::appendMessage(buffer, message);
     return buffer;
 }
