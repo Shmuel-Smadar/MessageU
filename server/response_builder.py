@@ -1,7 +1,8 @@
+from typing import List
 import uuid
 import time
 import struct
-from classes import Client
+from classes import Client, Message
 
 from constants import ProtocolLengths
 from constants import ClientCodes
@@ -35,15 +36,29 @@ class ResponseBuilder:
     def build_public_key_response(self, public_key):
         return self.build_response(ServerCodes.RETURNED_PUBLIC_KEY, public_key)
     
-    def build_public_message_sent_response(self, to_client_id):
+    def build_public_message_sent_response(self, to_client_id, ID):
         payload = bytes.fromhex(to_client_id)
+        id_bytes = ID.to_bytes(4, byteorder='little', signed=False)
+        payload += id_bytes
         return self.build_response(ServerCodes.MESSAGE_SENT, payload)
+        
+        
+    def build_awaiting_messages_response(self, messages: List[Message]):
+        payload = b''
+        for message in messages:
+            from_client_bytes = message.FromClient.encode('utf-8')[:16].ljust(16, b'\0')
+            payload += from_client_bytes
+            payload += struct.pack('>I', message.ID)
+            payload += struct.pack('>B', message.Type)
+            content_bytes = message.Content.encode('utf-8')
+            payload += struct.pack('>I', len(content_bytes))
+            payload += content_bytes
+        return self.build_response(ServerCodes.RETURNED_AWAITING_MESSAGES, payload)
         
     def build_error_response(self):
         return self.build_response(ServerCodes.ERROR, b'')
     
     def build_response(self, code, payload):
-        payload_size = len(payload)
-        header = struct.pack('<BHI', ServerCodes.VERSION, code, payload_size)
+        header = struct.pack('<BHI', ServerCodes.VERSION, code, len(payload))
         return header + payload
     

@@ -23,6 +23,8 @@ class Protocol:
             response = self.request_parser.public_key(client_id.hex(), payload, db)
         elif code == ClientCodes.MESSAGE_SENT:
              response = self.request_parser.message_sent(client_id.hex(), payload, db)
+        elif code == ClientCodes.AWAITING_MESSAGES:
+             response = self.request_parser.awaiting_messages(client_id.hex(), db)
         else:
             return
         data['response'] += response

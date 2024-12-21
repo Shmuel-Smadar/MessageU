@@ -7,6 +7,7 @@ class Client:
         self.UserName = UserName
         self.PublicKey = PublicKey
         self.LastSeen = LastSeen or time.time()
+        
 class Message:
     def __init__(self, ID, ToClient, FromClient, Type, Content):
         self.ID = ID

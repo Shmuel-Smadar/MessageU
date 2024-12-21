@@ -48,7 +48,12 @@ class RequestParser:
             raise ValueError("Payload does not contain enough bytes for the specified message size.")
         content = payload[21:21+message_size]
         #TODO:solve inconsistenry between request_parser and response_builder
-        message = Message(client_id, sent_client_id, message_type, content)
+        message = Message(1, client_id, sent_client_id, message_type, content)#TODO: Message ID generation
         db.add_message(message)
-        return self.response_builder.build_public_message_sent_response(sent_client_id) #TODO: Message ID
+        return self.response_builder.build_public_message_sent_response(sent_client_id, message.ID) 
 
+    def awaiting_messages(self, client_id, db: Database):
+       messages = db.get_messages_for_client(client_id)
+       return self.response_builder.build_awaiting_messages_response(messages)
+       
+       

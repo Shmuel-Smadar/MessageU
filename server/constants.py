@@ -3,6 +3,7 @@ class ClientCodes:
     CLIENT_LIST = 601
     PUBLIC_KEY = 602
     MESSAGE_SENT = 603
+    AWAITING_MESSAGES = 604
 
 class ServerCodes:
     VERSION = 1
@@ -10,6 +11,7 @@ class ServerCodes:
     RETURNED_CLIENT_LIST = 2101
     RETURNED_PUBLIC_KEY = 2102
     MESSAGE_SENT = 2103
+    RETURNED_AWAITING_MESSAGES = 2104
     ERROR = 9000
 
 class ProtocolLengths:
