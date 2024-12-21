@@ -18,6 +18,12 @@ namespace Utils {
         buffer.push_back((value >> 16) & 0xFF);
         buffer.push_back((value >> 24) & 0xFF);
     }
+    uint32_t Utils::parseUint32(const std::vector<uint8_t>& bytes) {
+        return static_cast<uint32_t>(bytes[0])
+            | (static_cast<uint32_t>(bytes[1]) << 8)
+            | (static_cast<uint32_t>(bytes[2]) << 16)
+            | (static_cast<uint32_t>(bytes[3]) << 24);
+    }
     void Utils::appendMessage(std::vector<uint8_t>& buffer, const Message& message) {
         appendToBuffer(buffer, hexStringToBytes(message.getSenderClientId()));
         buffer.push_back(message.getMessageType());

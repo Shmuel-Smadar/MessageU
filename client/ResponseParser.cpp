@@ -50,8 +50,10 @@ bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>
 	if (header == nullptr)
 		return false;
 	std::string requestedUserClientId = std::string(data.begin() + 7, data.begin() + 7 + 16);
-	std::cout << requestedUserClientId << std::endl;
-	std::string messsageID = std::string(data.begin() + 23, data.begin() + 23 + 4);
+	std::cout << Utils::bytesToHex(requestedUserClientId) << std::endl;
+	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
+
+	std::cout << messageID << std::endl;
 }
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
