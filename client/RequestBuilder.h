@@ -14,7 +14,7 @@ namespace RequestType {
 	constexpr uint16_t ClientList = 601;
 	constexpr uint16_t PublicKey = 602;
 	constexpr uint16_t SendMessage = 603;
-	constexpr uint16_t WaitingMessages = 604;
+	constexpr uint16_t AwaitingMessages = 604;
 };
 
 namespace MessageType {

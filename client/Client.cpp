@@ -151,7 +151,7 @@ void Client::requestWaitingMessages() {
 		networkManager.sendData(request);
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
-		responseParser.parseWaitingMessagesResponse(response, userInfoList, *encryptionManager);
+		responseParser.parseAwaitingMessagesResponse(response, userInfoList, *encryptionManager);
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {
