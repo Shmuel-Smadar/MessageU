@@ -32,12 +32,13 @@ bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 	return true;
 }
 
-bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo, EncryptionManager& encryptionManager) {
+bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	if (header == nullptr)
 		return false;
 	std::string publicKey = std::string(data.begin() + 7, data.begin() + 7 + 160);
 	encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
+	userInfo.publicKeyReceived();
 	return true;
 }
 
@@ -63,7 +64,9 @@ bool ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& d
 	return true;
 }
 
+void ResponseParser::parseMessage(const Message message, EncryptionManager& encryptionManager) {
 
+}
 //TODO: func name needs changing...
 bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);

@@ -33,7 +33,8 @@ private:
 public:
 	bool parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser);
 	bool parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList);
-	bool parsePublicKeyResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo, EncryptionManager& encryptionManager);
+	bool parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager);
 	bool parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager);
 	bool parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo);
+	void parseMessage(const Message message, EncryptionManager& encryptionManager);
 };
