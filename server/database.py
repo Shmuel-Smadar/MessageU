@@ -67,7 +67,6 @@ class Database:
                 print("\t".join(str(item) for item in row))
     
     def get_client_by_id(self, client_id: str) -> Client:
-        print(f"Looking for client with ID: {client_id}")
         with self.conn:
             row = self.conn.execute(
                 'SELECT * FROM clients WHERE ID = ?', (client_id,)

@@ -46,13 +46,12 @@ class ResponseBuilder:
     def build_awaiting_messages_response(self, messages: List[Message]):
         payload = b''
         for message in messages:
-            from_client_bytes = message.FromClient.encode('utf-8')[:16].ljust(16, b'\0')
-            payload += from_client_bytes
-            payload += struct.pack('>I', message.ID)
-            payload += struct.pack('>B', message.Type)
-            content_bytes = message.Content.encode('utf-8')
-            payload += struct.pack('>I', len(content_bytes))
-            payload += content_bytes
+            payload += bytes.fromhex(message.FromClient)
+            payload += message.ID.to_bytes(4, byteorder='little', signed=False)
+            payload += message.Type.to_bytes(1, byteorder='little', signed=False)
+            payload += len(message.Content).to_bytes(4, byteorder='little', signed=False)
+            payload += message.Content
+            print(f"Client: {message.FromClient}, ID: {message.ID}, Type: {message.Type}")
         return self.build_response(ServerCodes.RETURNED_AWAITING_MESSAGES, payload)
         
     def build_error_response(self):

@@ -40,15 +40,15 @@ class RequestParser:
         if len(payload) < 21:
             raise ValueError("Payload too short to contain required fields.")
         sent_client_id = payload[:16].hex()
-        message_type = payload[16]
         print(sent_client_id)
+        message_type = payload[16]
         message_size = int.from_bytes(payload[17:21], byteorder='little')
         expected_length = 21 + message_size
         if len(payload) < expected_length:
             raise ValueError("Payload does not contain enough bytes for the specified message size.")
         content = payload[21:21+message_size]
         #TODO:solve inconsistenry between request_parser and response_builder
-        message = Message(1, client_id, sent_client_id, message_type, content)#TODO: Message ID generation
+        message = Message(1, sent_client_id, client_id, message_type, content)#TODO: Message ID generation
         db.add_message(message)
         return self.response_builder.build_public_message_sent_response(sent_client_id, message.ID) 
 
