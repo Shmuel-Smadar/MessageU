@@ -1,8 +1,5 @@
 #include "ResponseParser.h"
 
-namespace ServerCodes {
-	uint16_t Error = 9000;
-}
 
 bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
 

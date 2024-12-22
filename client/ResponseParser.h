@@ -8,21 +8,7 @@
 #include "UserInfo.h"
 #include "UserInfoList.h"
 #include "EncryptionManager.h"
-
-namespace ProtocolSizes {
-	constexpr size_t Header = 7;
-	constexpr size_t ClientName = 255;
-	constexpr size_t ClientId = 16;
-};
-
-struct ResponseHeader {
-	uint8_t version;
-	uint16_t code;
-	uint32_t payloadSize;
-
-	ResponseHeader(uint8_t ver = 0, uint16_t c = 0, uint32_t size = 0)
-		: version(ver), code(c), payloadSize(size) {}
-};
+#include "ProtocolConstants.h"
 
 class ResponseParser {
 private:
