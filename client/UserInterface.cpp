@@ -25,7 +25,6 @@ int UserInterface::getUserSelection() const {
     catch (std::exception e) {
         return -1;
     }
-
 }
 
 std::string UserInterface::getInput(const std::string& prompt) const {
@@ -37,4 +36,10 @@ std::string UserInterface::getInput(const std::string& prompt) const {
 
 void UserInterface::printMessage(const std::string& message) const {
     std::cout << message << std::endl;
+}
+
+void UserInterface::printMessages(std::vector<Message> messages) const {
+    for (Message message : messages) {
+        message.printMessage();
+    }
 }
