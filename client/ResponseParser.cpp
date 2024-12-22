@@ -48,14 +48,15 @@ std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::ve
 		pos += 4;
 		std::string content(reinterpret_cast<const char*>(&data[pos]), contentSize);
 		pos += contentSize;
-		Message message(fromClient, messageType, content);
-		parseMessage(message, userInfoList, encryptionManager);
+		Message message(userInfoList.getUserByID(Utils::bytesToHex(fromClient)), messageType, content);
+		parseMessage(message, encryptionManager);
 		messages.emplace_back(message);
 	}
+	return messages;
 }
 
-void ResponseParser::parseMessage(Message message, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
-	UserInfo* userInfo = userInfoList.getUserByID(message.getSenderClientId());
+void ResponseParser::parseMessage(Message message, EncryptionManager& encryptionManager) {
+	UserInfo* userInfo = message.getUser();
 	std::string senderClientId = message.getSenderClientId();
 	if (message.getMessageType() == MessageType::SymmetricKeyRequest) {
 		userInfo->otherUserRequestedSymmericKey();
