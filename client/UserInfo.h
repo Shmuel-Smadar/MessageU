@@ -3,24 +3,40 @@
 #include <string>
 
 class UserInfo {
-private:
-    std::string name;
-    std::string clientID;
-    bool hasPublicKey;
-    bool hasSymmetricKey;
 
 public:
-    UserInfo(const std::string& name, const std::string& UserID);
 
-    std::string getName() const;
-    void setName(const std::string& name);
+	enum class SymmetricKeyStatus {
+		NotRequested,
+		RequestedByCurrentUser,
+		RequestedByOtherUser,
+		RequestedByBoth,
+		KeyReceived
+	};
 
-    std::string getClientID() const;
-    void setClientID(const std::string& ClientID);
-    void publicKeyReceived();
-    void symmetricKeyReceived();
-    bool isPublicKeyReceived();
-    bool isSymmetricKeyReceived();
+	UserInfo(const std::string& name, const std::string& UserID);
+
+	std::string getName() const;
+	void setName(const std::string& name);
+
+	std::string getClientID() const;
+	void setClientID(const std::string& ClientID);
+
+	bool isPublicKeyReceived() const;
+	bool isSymmetricKeyReceived() const;
+	bool isSymmetricKeyRequestedByOtherUser() const;
+	bool isSymmetricKeyRequestedByCurrentUser() const;
+
+	void publicKeyReceived();
+	void symmetricKeyReceived();
+	void otherUserRequestedSymmericKey();
+	void currentUserRequestedSymmericKey();
+private:
+	std::string name;
+	std::string clientID;
+	bool hasPublicKey;
+	SymmetricKeyStatus symmetricKeyStatus;
+
 
 
 };
