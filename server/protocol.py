@@ -1,6 +1,5 @@
 import struct
 from constants import ProtocolLengths
-from constants import ServerCodes
 from request_parser import RequestParser
 from constants import ClientCodes
 class Protocol:
