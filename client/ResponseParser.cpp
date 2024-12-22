@@ -4,8 +4,6 @@
 bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
 
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	if (header == nullptr)
-		return false;
 	std::string clientID(data.begin() + 7, data.begin() + 23);
 	currentUser.setClientID(Utils::bytesToHex(clientID));
 	currentUser.setRegistered(true);
@@ -14,8 +12,6 @@ bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data,
 
 bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	if (header == nullptr)
-		return false;
 	size_t pos = ProtocolSizes::Header;
 	size_t userDataLength = ProtocolSizes::ClientId + ProtocolSizes::ClientName;
 	while (pos + userDataLength <= data.size()) {
@@ -31,18 +27,14 @@ bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 
 bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	if (header == nullptr)
-		return false;
 	std::string publicKey = std::string(data.begin() + 7, data.begin() + 7 + 160);
 	encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
 	userInfo.publicKeyReceived();
 	return true;
 }
 
-bool ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
+std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	if (header == nullptr)
-		return false;
 	size_t pos = ProtocolSizes::Header;
 	std::vector<Message> messages;
 	while (pos + 16 + 4 + 1 + 4 <= data.size()) {
@@ -56,14 +48,28 @@ bool ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& d
 		pos += 4;
 		std::string content(reinterpret_cast<const char*>(&data[pos]), contentSize);
 		pos += contentSize;
-		messages.emplace_back(fromClient, messageType, content);
+		Message message(fromClient, messageType, content);
+		parseMessage(message, userInfoList, encryptionManager);
+		messages.emplace_back(message);
 	}
-	return true;
 }
 
-void ResponseParser::parseMessage(const Message message, EncryptionManager& encryptionManager) {
-
+void ResponseParser::parseMessage(Message message, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
+	UserInfo* userInfo = userInfoList.getUserByID(message.getSenderClientId());
+	std::string senderClientId = message.getSenderClientId();
+	if (message.getMessageType() == MessageType::SymmetricKeyRequest) {
+		userInfo->otherUserRequestedSymmericKey();
+	}
+	else if (message.getMessageType() == MessageType::SymmetricKeySent) {
+		encryptionManager.storeSymmetricKey(senderClientId, encryptionManager.decryptWithPrivateKey(message.getContent()));
+		userInfo->publicKeyReceived();
+	}
+	else if (message.getMessageType() == MessageType::TextMessageSent) {
+		message.setContent(encryptionManager.decryptWithSymmetricKey(senderClientId, message.getContent()));
+	}
 }
+
+
 //TODO: func name needs changing...
 bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
@@ -75,7 +81,7 @@ bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
 	if (data.size() < 7) {
-		return nullptr;
+		throw;
 	}
 	std::unique_ptr<ResponseHeader> header(new ResponseHeader());
 	header->version = static_cast<uint8_t>(data[0]);
@@ -86,6 +92,6 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 		(static_cast<uint32_t>(data[5]) << 16) |
 		(static_cast<uint32_t>(data[6]) << 24);
 	if (header->code == ServerCodes::Error)
-		return nullptr;
+		throw;
 	return header;
 }
