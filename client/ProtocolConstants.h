@@ -9,7 +9,7 @@ namespace RequestType {
 	constexpr uint16_t AwaitingMessages = 604;
 }
 namespace ServerCodes {
-	uint16_t Error = 9000;
+	constexpr uint16_t Error = 9000;
 }
 namespace MessageType {
 	constexpr uint8_t SymmetricKeyRequest = 1;
