@@ -46,8 +46,9 @@ void Client::handleUserSelection(int selection) {
 		registerClient();
 		return;
 	}
-	else if (!currentUser.isRegistered()) {
-		userInterface.printMessage("Please register first.");
+	// if the user did not chose to register, inform them that it is required for any other action.
+	else if (!currentUser.isRegistered()) { 
+		userInterface.printText("Please register first.");
 		return;
 	}
 	switch (selection) {
@@ -73,20 +74,19 @@ void Client::handleUserSelection(int selection) {
 		//exitClient();
 		break;
 	default:
-		userInterface.printMessage("Invalid selection. Please try again.");
+		userInterface.printText("Invalid selection. Please try again.");
 	}
 }
-
 
 
 void Client::registerClient() {
 	try {
 		if (currentUser.isRegistered()) {
-			userInterface.printMessage("Already registered.");
+			userInterface.printText("Already registered.");
 			return;
 		}
 		if (!currentUser.setName(userInterface.getInput("Enter username: "))) {
-			userInterface.printMessage("Name must not surpass 254 letters.");
+			userInterface.printText("Name must not surpass 254 letters.");
 			return;
 		}
 		networkManager.connect();
@@ -97,7 +97,7 @@ void Client::registerClient() {
 		responseParser.parseRegistrationResponse(response, currentUser);
 	}
 	catch (std::exception& e) {
-		return;
+		std::cerr << e.what() << std::endl;
 	}
 }
 
@@ -105,7 +105,7 @@ void Client::requestClientsList() {
 
 	try {
 		if (!currentUser.isRegistered()) {
-			userInterface.printMessage("Please register first.");
+			userInterface.printText("Please register first.");
 			return;
 		}
 		std::vector<uint8_t> request = requestBuilder.buildClientsListRequest(currentUser);
@@ -117,12 +117,12 @@ void Client::requestClientsList() {
 
 		if (!responseParser.parseClientsListResponse(response, userInfoList))
 			return; //TODO: rethink using exceptions and when to print errors
-		userInterface.printMessage("Registered clients:");
+		userInterface.printText("Registered clients:");
 		userInfoList.printUsers();
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {
-		e.what();
+		std::cerr << e.what() << std::endl;
 	}
 }
 
@@ -130,7 +130,7 @@ void Client::requestPublicKey() {
 	std::string targetName = userInterface.getInput("Enter username to request public key: ");
 	UserInfo* requestedUser = userInfoList.getUserByName(targetName);
 	if (requestedUser == nullptr) {
-		userInterface.printMessage("User not found. Please request the clients list first.");
+		userInterface.printText("User not found. Please request the clients list first.");
 		return;
 	}
 	std::vector<uint8_t> request = requestBuilder.buildPublicKeyRequest(currentUser, requestedUser);
@@ -166,7 +166,7 @@ void Client::sendSymmetricKeyRequest() {
 		std::string targetName = userInterface.getInput("Enter username to request symmetric key: ");
 		UserInfo* requestedUser = userInfoList.getUserByName(targetName);
 		if (requestedUser == nullptr) {
-			userInterface.printMessage("User not found. Please request the clients list first.");
+			userInterface.printText("User not found. Please request the clients list first.");
 			return;
 		}
 		std::vector<uint8_t> request = requestBuilder.buildSymmetricKeyRequest(currentUser, requestedUser, *encryptionManager);

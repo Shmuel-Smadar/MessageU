@@ -10,6 +10,6 @@ public:
     void displayMenu() const;
     int getUserSelection() const;
     std::string getInput(const std::string& prompt) const;
-    void printMessage(const std::string& message) const; //TODO: change func name so it won't mislead cuz of the type "Message"
+    void printText(const std::string& message) const; //TODO: change func name so it won't mislead cuz of the type "Message"
     void printMessages(std::vector<Message> messages) const;
 };
