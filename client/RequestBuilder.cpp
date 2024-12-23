@@ -29,11 +29,11 @@ std::vector<uint8_t> RequestBuilder::buildClientsListRequest(CurrentUser& curren
 }
 
 
-std::vector<uint8_t> RequestBuilder::buildPublicKeyRequest(CurrentUser& currentUser, UserInfo* userInfo) {
+std::vector<uint8_t> RequestBuilder::buildPublicKeyRequest(CurrentUser& currentUser, UserInfo& userInfo) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::PublicKey);
     std::vector<uint8_t> payload;
-    Utils::appendToBuffer(payload, Utils::hexStringToBytes(userInfo->getClientID()));
+    Utils::appendToBuffer(payload, Utils::hexStringToBytes(userInfo.getClientID()));
     Utils::appendUint32(buffer, static_cast<uint32_t>(payload.size()));
     buffer.insert(buffer.end(), payload.begin(), payload.end());
     return buffer;
@@ -48,10 +48,10 @@ std::vector<uint8_t> RequestBuilder::buildWaitingMessagesRequest(CurrentUser& cu
     return buffer;
 }
 //TODO: check if the empty message should be encrypted.
-std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo* userInfo, EncryptionManager& encryptionManager) {
+std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::SendMessage);
-    Message message(userInfo, MessageType::SymmetricKeyRequest, encryptionManager.encryptWithPublicKey(userInfo->getClientID(), ""));
+    Message message(userInfo, MessageType::SymmetricKeyRequest, encryptionManager.encryptWithPublicKey(userInfo.getClientID(), ""));
     Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
     Utils::appendMessage(buffer, message);
     return buffer;

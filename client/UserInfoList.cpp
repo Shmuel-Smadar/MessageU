@@ -4,22 +4,22 @@
 UserInfoList::UserInfoList() {
 }
 
-UserInfo* UserInfoList::getUserByID(const std::string& clientID) {
+UserInfo& UserInfoList::getUserByID(const std::string& clientID) {
     for (UserInfo& user : userInfoList) {
         if (user.getClientID() == clientID) {
-            return &user;
+            return user;
         }
     }
-    return nullptr;
+    throw std::runtime_error("User with clientID: " + clientID + " was not found");
 }
 
-UserInfo* UserInfoList::getUserByName(const std::string& name) {
+UserInfo& UserInfoList::getUserByName(const std::string& name) {
     for (UserInfo& user : userInfoList) {
         if (!name.compare(user.getName())) {
-            return &user;
+            return user;
         }
     }
-    return nullptr;
+    throw std::runtime_error("User with name: " + name + " was not found");
 }
 
 void UserInfoList::addUser(const std::string& clientID, const std::string& name) {

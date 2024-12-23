@@ -56,14 +56,14 @@ std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::ve
 }
 
 void ResponseParser::parseMessage(Message message, EncryptionManager& encryptionManager) {
-	UserInfo* userInfo = message.getUser();
+	UserInfo userInfo = message.getUser();
 	std::string senderClientId = message.getSenderClientId();
 	if (message.getMessageType() == MessageType::SymmetricKeyRequest) {
-		userInfo->otherUserRequestedSymmericKey();
+		userInfo.otherUserRequestedSymmericKey();
 	}
 	else if (message.getMessageType() == MessageType::SymmetricKeySent) {
 		encryptionManager.storeSymmetricKey(senderClientId, encryptionManager.decryptWithPrivateKey(message.getContent()));
-		userInfo->publicKeyReceived();
+		userInfo.publicKeyReceived();
 	}
 	else if (message.getMessageType() == MessageType::TextMessageSent) {
 		message.setContent(encryptionManager.decryptWithSymmetricKey(senderClientId, message.getContent()));
@@ -72,7 +72,7 @@ void ResponseParser::parseMessage(Message message, EncryptionManager& encryption
 
 
 //TODO: func name needs changing...
-bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo) {
+bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	if (header == nullptr)
 		return false;

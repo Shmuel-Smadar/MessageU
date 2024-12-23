@@ -19,7 +19,7 @@ private:
 public:
 	std::vector<uint8_t> buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey);
 	std::vector<uint8_t> buildClientsListRequest(CurrentUser& currentUser);
-	std::vector<uint8_t> buildPublicKeyRequest(CurrentUser& currentUser, UserInfo* userInfo);
+	std::vector<uint8_t> buildPublicKeyRequest(CurrentUser& currentUser, UserInfo& userInfo);
 	std::vector<uint8_t> buildWaitingMessagesRequest(CurrentUser& currentUser);
-	std::vector<uint8_t> buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo* userInfo, EncryptionManager& encryptionManager);
+	std::vector<uint8_t> buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager);
 };

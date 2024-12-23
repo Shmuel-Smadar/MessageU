@@ -23,10 +23,11 @@ private:
     void requestPublicKey();
     void requestWaitingMessages();
     void sendSymmetricKeyRequest();
+    void sendTextMessage();
 
     /*TODO:
     
-    void sendTextMessage();
+    
     void sendOwnSymmetricKey();
     void exitClient();*/
 

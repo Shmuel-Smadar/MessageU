@@ -21,6 +21,6 @@ public:
 	bool parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList);
 	bool parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager);
 	std::vector<Message> parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager);
-	bool parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo* userInfo);
+	bool parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo);
 	void parseMessage(const Message message, EncryptionManager& encryptionManager);
 };

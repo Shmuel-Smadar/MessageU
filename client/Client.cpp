@@ -62,7 +62,7 @@ void Client::handleUserSelection(int selection) {
 		requestWaitingMessages();
 		break;
 	case 5:
-		//sendTextMessage();
+		sendTextMessage();
 		break;
 	case 6:
 		sendSymmetricKeyRequest();
@@ -127,12 +127,9 @@ void Client::requestClientsList() {
 }
 
 void Client::requestPublicKey() {
+	try {
 	std::string targetName = userInterface.getInput("Enter username to request public key: ");
-	UserInfo* requestedUser = userInfoList.getUserByName(targetName);
-	if (requestedUser == nullptr) {
-		userInterface.printText("User not found. Please request the clients list first.");
-		return;
-	}
+	UserInfo requestedUser = userInfoList.getUserByName(targetName);
 	std::vector<uint8_t> request = requestBuilder.buildPublicKeyRequest(currentUser, requestedUser);
 	networkManager.connect();
 	networkManager.sendData(request);
@@ -140,8 +137,12 @@ void Client::requestPublicKey() {
 	std::vector<uint8_t> response;
 	networkManager.receiveData(response);
 
-	responseParser.parsePublicKeyResponse(response, *requestedUser, *encryptionManager);
+	responseParser.parsePublicKeyResponse(response, requestedUser, *encryptionManager);
 	networkManager.disconnect();
+	}
+	catch (std::exception e) {
+		std::cerr << e.what() << std::endl;
+	}
 }
 
 void Client::requestWaitingMessages() {
@@ -164,11 +165,7 @@ void Client::sendSymmetricKeyRequest() {
 	try {
 		networkManager.connect();
 		std::string targetName = userInterface.getInput("Enter username to request symmetric key: ");
-		UserInfo* requestedUser = userInfoList.getUserByName(targetName);
-		if (requestedUser == nullptr) {
-			userInterface.printText("User not found. Please request the clients list first.");
-			return;
-		}
+		UserInfo requestedUser = userInfoList.getUserByName(targetName);
 		std::vector<uint8_t> request = requestBuilder.buildSymmetricKeyRequest(currentUser, requestedUser, *encryptionManager);
 		networkManager.sendData(request);
 		std::vector<uint8_t> response;
@@ -178,5 +175,23 @@ void Client::sendSymmetricKeyRequest() {
 	}
 	catch (std::exception e) {
 
+	}
+}
+
+void Client::sendTextMessage() {
+	try {
+		networkManager.connect();
+		std::string targetName = userInterface.getInput("Enter username to send a messgae to: ");
+		UserInfo requestedUser = userInfoList.getUserByName(targetName);
+		
+		std::vector<uint8_t> request = requestBuilder.buildSymmetricKeyRequest(currentUser, requestedUser, *encryptionManager);
+		networkManager.sendData(request);
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
+		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
+		networkManager.disconnect();
+	}
+	catch (std::exception e) {
+		std::cerr << e.what() << std::endl;
 	}
 }

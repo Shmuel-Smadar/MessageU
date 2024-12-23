@@ -13,8 +13,8 @@ private:
 public:
     UserInfoList();
 
-    UserInfo* getUserByID(const std::string& UserID);
-    UserInfo* getUserByName(const std::string& name);
+    UserInfo& getUserByID(const std::string& UserID);
+    UserInfo& getUserByName(const std::string& name);
     void addUser(const std::string& UserID, const std::string& name);
     void printUsers();
 };

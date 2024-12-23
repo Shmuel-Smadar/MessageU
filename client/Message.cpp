@@ -1,18 +1,17 @@
 #include "Message.h"
 
 
-Message::Message(UserInfo* userInfo, const uint8_t& messageType, const std::string& content) {
-	this->userInfo = userInfo;
-	this->messageType = messageType;
-	this->content = content;
-}
+Message::Message(UserInfo& userInfo, const uint8_t& messageType, const std::string& content)
+	: userInfo(userInfo),
+	messageType(messageType),
+	content(content) { }
 
 std::string Message::getSenderClientId() const {
-	return this->userInfo->getClientID();
+	return this->userInfo.getClientID();
 }
 
 std::string Message::getSenderUserName() const {
-	return this->userInfo->getName();
+	return this->userInfo.getName();
 }
 uint8_t Message::getMessageType() const {
 	return messageType;
@@ -21,7 +20,7 @@ uint8_t Message::getMessageType() const {
 std::string Message::getContent() const {
 	return content;
 }
-UserInfo* Message::getUser() const {
+UserInfo Message::getUser() const {
 	return this->userInfo;
 }
 void Message::setContent(const std::string& content) {
