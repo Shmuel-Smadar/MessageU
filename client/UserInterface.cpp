@@ -27,14 +27,14 @@ int UserInterface::getUserSelection() const {
     }
 }
 
-std::string UserInterface::printText(const std::string& prompt) const {
+std::string UserInterface::getInput(const std::string& prompt) const {
     std::cout << prompt;
     std::string input;
     std::getline(std::cin, input);
     return input;
 }
 
-void UserInterface::printMessage(const std::string& message) const {
+void UserInterface::printText(const std::string& message) const {
     std::cout << message << std::endl;
 }
 

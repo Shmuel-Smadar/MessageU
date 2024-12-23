@@ -81,9 +81,6 @@ bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>
 }
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
-	if (data.size() < 7) {
-		throw;
-	}
 	std::unique_ptr<ResponseHeader> header(new ResponseHeader());
 	header->version = static_cast<uint8_t>(data[0]);
 	header->code = static_cast<uint16_t>(data[1]) |
@@ -93,6 +90,6 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 		(static_cast<uint32_t>(data[5]) << 16) |
 		(static_cast<uint32_t>(data[6]) << 24);
 	if (header->code == ServerCodes::Error)
-		throw;
+		throw std::runtime_error("Server responded with an error.");
 	return header;
 }

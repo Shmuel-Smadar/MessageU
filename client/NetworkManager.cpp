@@ -26,7 +26,7 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
 	std::string line;
 	if (std::getline(infile, line)) {
 		size_t colon = line.find(':');
-		if (colon != std::string::npos) { /* not the end of the file (means a colon exist) */
+		if (colon != std::string::npos) { // not the end of the file (means a colon exist)
 			IP = line.substr(0, colon);
 			port = std::stoi(line.substr(colon + 1));
 			return true;
@@ -41,21 +41,21 @@ void NetworkManager::sendData(const std::vector<uint8_t>& data) {
 }
 
 void NetworkManager::receiveData(std::vector<uint8_t>& data) {
-	// Read response header (version, code, payload size)
+	// read response header (version, code, payload size)
 	uint8_t header[7];
 	size_t bytesRead = boost::asio::read(socket, boost::asio::buffer(header, 7));
 	if (bytesRead != 7)
-		throw;
-	// Extract the payload size 
+		throw std::runtime_error("Message recieved from the server does not have proper headers.");
+	// extract the payload size 
 	uint32_t payloadSize = header[3] | (header[4] << 8) | (header[5] << 16) | (header[6] << 24);
 	data.insert(data.end(), header, header + 7);
 
-	// Read payload according to the payload size
+	// read payload according to the payload size
 	if (payloadSize > 0) {
 		std::vector<uint8_t> payload(payloadSize);
 		bytesRead = boost::asio::read(socket, boost::asio::buffer(payload));
 		if (bytesRead != payloadSize)
-			throw;
+			throw std::runtime_error("Message recieved from the server has shorter payload than what was specified.");
 		data.insert(data.end(), payload.begin(), payload.end());
 	}
 }
