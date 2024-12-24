@@ -22,7 +22,7 @@ class Database:
             ''')
             self.conn.execute('''
             CREATE TABLE IF NOT EXISTS messages (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                ID INTEGER PRIMARY KEY,
                 ToClient TEXT NOT NULL,
                 FromClient TEXT NOT NULL,
                 Type INTEGER NOT NULL,
@@ -91,9 +91,9 @@ class Database:
     def add_message(self, message: Message):
         with self.conn:
             self.conn.execute('''
-                INSERT INTO messages (ToClient, FromClient, Type, Content)
-                VALUES (?, ?, ?, ?)
-            ''', (message.ToClient, message.FromClient, message.Type, message.Content))
+                INSERT INTO messages (ID, ToClient, FromClient, Type, Content)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (message.ID, message.ToClient, message.FromClient, message.Type, message.Content))
 
     def get_messages_for_client(self, client_id: str) -> List[Message]:
         with self.conn:

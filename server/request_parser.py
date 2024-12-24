@@ -1,3 +1,4 @@
+import uuid
 from constants import ProtocolLengths
 from constants import ServerCodes
 from response_builder import ResponseBuilder
@@ -48,7 +49,9 @@ class RequestParser:
             raise ValueError("Payload does not contain enough bytes for the specified message size.")
         content = payload[21:21+message_size]
         #TODO:solve inconsistenry between request_parser and response_builder
-        message = Message(1, sent_client_id, client_id, message_type, content)#TODO: Message ID generation
+        message_id = uuid.uuid4().int & (1<<32)-1
+        message = Message(message_id, sent_client_id, client_id, message_type, content)#TODO: Message ID generation
+        print(f"Client: {message.FromClient}, ID: {message.ID}, size: {len(content)}, Content: {content}")
         db.add_message(message)
         return self.response_builder.build_public_message_sent_response(sent_client_id, message.ID) 
 

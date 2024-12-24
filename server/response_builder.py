@@ -49,9 +49,9 @@ class ResponseBuilder:
             payload += bytes.fromhex(message.FromClient)
             payload += message.ID.to_bytes(4, byteorder='little', signed=False)
             payload += message.Type.to_bytes(1, byteorder='little', signed=False)
-            payload += len(message.Content).to_bytes(4, byteorder='little', signed=False)
+            payload += (len(message.Content)).to_bytes(4, byteorder='little', signed=False)
             payload += message.Content
-            print(f"Client: {message.FromClient}, ID: {message.ID}, Type: {message.Type}")
+            print(f"Client: {message.FromClient}, ID: {message.ID}, Type: {message.Type}, Content: {message.Content}")
         return self.build_response(ServerCodes.RETURNED_AWAITING_MESSAGES, payload)
         
     def build_error_response(self):
