@@ -71,7 +71,7 @@ void Client::handleUserSelection(int selection) {
 		sendOwnSymmetricKey();
 		break;
 	case 0:
-		//exitClient();
+		exitClient();
 		break;
 	default:
 		userInterface.printText("Invalid selection. Please try again.");
@@ -217,4 +217,8 @@ void Client::sendOwnSymmetricKey() {
 		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
+}
+
+void Client::exitClient() {
+	exit(0);
 }

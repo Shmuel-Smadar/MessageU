@@ -25,13 +25,10 @@ private:
     void sendSymmetricKeyRequest();
     void sendTextMessage();
     void sendOwnSymmetricKey();
+    void exitClient(); 
 
-    /*TODO:
     
-    
-    
-    void exitClient();*/
-
+   
     RequestBuilder requestBuilder;
     ResponseParser responseParser;
     UserInterface userInterface;
