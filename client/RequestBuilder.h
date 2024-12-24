@@ -22,4 +22,6 @@ public:
 	std::vector<uint8_t> buildPublicKeyRequest(CurrentUser& currentUser, UserInfo& userInfo);
 	std::vector<uint8_t> buildWaitingMessagesRequest(CurrentUser& currentUser);
 	std::vector<uint8_t> buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager);
+	std::vector<uint8_t> buildTextMessageRequest(CurrentUser& currentUser, UserInfo& userInfo, std::string& textMessage, EncryptionManager& encryptionManager);
+	std::vector<uint8_t> buildSendSymmetricKey(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager);
 };

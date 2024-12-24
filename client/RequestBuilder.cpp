@@ -28,7 +28,6 @@ std::vector<uint8_t> RequestBuilder::buildClientsListRequest(CurrentUser& curren
     return buffer;
 }
 
-
 std::vector<uint8_t> RequestBuilder::buildPublicKeyRequest(CurrentUser& currentUser, UserInfo& userInfo) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::PublicKey);
@@ -57,6 +56,25 @@ std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& curre
     return buffer;
 }
 
+std::vector<uint8_t> RequestBuilder::buildSendSymmetricKey(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager) {
+    std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
+    Utils::appendUint16(buffer, RequestType::SendMessage);
+    encryptionManager.generateSymmetricKey(userInfo.getClientID());
+    std::string symmetricKey = encryptionManager.getSymmetricKey(userInfo.getClientID());
+    Message message(userInfo, MessageType::SymmetricKeySent, encryptionManager.encryptWithPublicKey(userInfo.getClientID(), symmetricKey));
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
+    Utils::appendMessage(buffer, message);
+    return buffer;
+}
+std::vector<uint8_t> RequestBuilder::buildTextMessageRequest(CurrentUser& currentUser, UserInfo& userInfo, std::string& textMessage, EncryptionManager& encryptionManager) {
+    std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
+    Utils::appendUint16(buffer, RequestType::SendMessage);
+    std::string cipher = encryptionManager.encryptWithSymmetricKey(userInfo.getClientID(), textMessage);
+    Message message(userInfo, MessageType::TextMessageSent, cipher);
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
+    Utils::appendMessage(buffer, message);
+    return buffer;
+}
 
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
     std::vector<uint8_t> buffer = Utils::hexStringToBytes(currentUser.getClientID());

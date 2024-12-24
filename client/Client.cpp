@@ -68,7 +68,7 @@ void Client::handleUserSelection(int selection) {
 		sendSymmetricKeyRequest();
 		break;
 	case 7:
-		//sendOwnSymmetricKey();
+		sendOwnSymmetricKey();
 		break;
 	case 0:
 		//exitClient();
@@ -98,6 +98,7 @@ void Client::registerClient() {
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
+		networkManager.disconnect();
 	}
 }
 
@@ -115,14 +116,14 @@ void Client::requestClientsList() {
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
 
-		if (!responseParser.parseClientsListResponse(response, userInfoList))
-			return; //TODO: rethink using exceptions and when to print errors
+		responseParser.parseClientsListResponse(response, userInfoList);
 		userInterface.printText("Registered clients:");
 		userInfoList.printUsers();
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {
 		std::cerr << e.what() << std::endl;
+		networkManager.disconnect();
 	}
 }
 
@@ -142,6 +143,7 @@ void Client::requestPublicKey() {
 	}
 	catch (std::exception e) {
 		std::cerr << e.what() << std::endl;
+		networkManager.disconnect();
 	}
 }
 
@@ -157,7 +159,7 @@ void Client::requestWaitingMessages() {
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {
-
+		networkManager.disconnect();
 	}
 }
 
@@ -174,7 +176,7 @@ void Client::sendSymmetricKeyRequest() {
 		networkManager.disconnect();
 	}
 	catch (std::exception e) {
-
+		networkManager.disconnect();
 	}
 }
 
@@ -182,9 +184,29 @@ void Client::sendTextMessage() {
 	try {
 		networkManager.connect();
 		std::string targetName = userInterface.getInput("Enter username to send a messgae to: ");
+		std::string textMessage = userInterface.getInput("Enter the message you'de like to send to this user: ");
 		UserInfo requestedUser = userInfoList.getUserByName(targetName);
 		
-		std::vector<uint8_t> request = requestBuilder.buildSymmetricKeyRequest(currentUser, requestedUser, *encryptionManager);
+		std::vector<uint8_t> request = requestBuilder.buildTextMessageRequest(currentUser, requestedUser, textMessage, *encryptionManager);
+		networkManager.sendData(request);
+		std::vector<uint8_t> response;
+		networkManager.receiveData(response);
+		responseParser.parseTextMessagetResponse(response, requestedUser);
+		networkManager.disconnect();
+	}
+	catch (std::exception e) {
+		std::cerr << e.what() << std::endl;
+		networkManager.disconnect();
+	}
+}
+
+void Client::sendOwnSymmetricKey() {
+	try {
+		networkManager.connect();
+		std::string targetName = userInterface.getInput("Enter username to send a symmetric key to: ");
+		UserInfo requestedUser = userInfoList.getUserByName(targetName);
+
+		std::vector<uint8_t> request = requestBuilder.buildSendSymmetricKey(currentUser, requestedUser, *encryptionManager);
 		networkManager.sendData(request);
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
@@ -193,5 +215,6 @@ void Client::sendTextMessage() {
 	}
 	catch (std::exception e) {
 		std::cerr << e.what() << std::endl;
+		networkManager.disconnect();
 	}
 }

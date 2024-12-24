@@ -1,16 +1,15 @@
 #include "ResponseParser.h"
 
 
-bool ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
+void ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
 
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	std::string clientID(data.begin() + 7, data.begin() + 23);
 	currentUser.setClientID(Utils::bytesToHex(clientID));
 	currentUser.setRegistered(true);
-	return true;
 }
 
-bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList) {
+void ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	size_t pos = ProtocolSizes::Header;
 	size_t userDataLength = ProtocolSizes::ClientId + ProtocolSizes::ClientName;
@@ -22,15 +21,13 @@ bool ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 		pos += ProtocolSizes::ClientName;
 		userInfoList.addUser(Utils::bytesToHex(clientId), Utils::trimAfterNull(clientName));
 	}
-	return true;
 }
 
-bool ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
+void ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	std::string publicKey = std::string(data.begin() + 7, data.begin() + 7 + 160);
 	encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
 	userInfo.publicKeyReceived();
-	return true;
 }
 
 std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
@@ -55,7 +52,7 @@ std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::ve
 	return messages;
 }
 
-void ResponseParser::parseMessage(Message message, EncryptionManager& encryptionManager) {
+void ResponseParser::parseMessage(Message& message, EncryptionManager& encryptionManager) {
 	UserInfo userInfo = message.getUser();
 	std::string senderClientId = message.getSenderClientId();
 	if (message.getMessageType() == MessageType::SymmetricKeyRequest) {
@@ -72,11 +69,14 @@ void ResponseParser::parseMessage(Message message, EncryptionManager& encryption
 
 
 //TODO: func name needs changing...
-bool ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
+void ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	if (header == nullptr)
-		return false;
-	std::string requestedUserClientId = std::string(data.begin() + 7, data.begin() + 7 + 16);
+	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + 7, data.begin() + 7 + 16));
+	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
+}
+void ResponseParser::parseTextMessagetResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
+	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + 7, data.begin() + 7 + 16));
 	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
 }
 

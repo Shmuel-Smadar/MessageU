@@ -24,11 +24,12 @@ private:
     void requestWaitingMessages();
     void sendSymmetricKeyRequest();
     void sendTextMessage();
+    void sendOwnSymmetricKey();
 
     /*TODO:
     
     
-    void sendOwnSymmetricKey();
+    
     void exitClient();*/
 
     RequestBuilder requestBuilder;

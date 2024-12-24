@@ -17,10 +17,11 @@ private:
 	std::unique_ptr<ResponseHeader> parseResponseHeaders(const std::vector<uint8_t>& data);
 
 public:
-	bool parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser);
-	bool parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList);
-	bool parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager);
+	void parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser);
+	void parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList);
+	void parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager);
 	std::vector<Message> parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager);
-	bool parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo);
-	void parseMessage(const Message message, EncryptionManager& encryptionManager);
+	void parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo);
+	void parseMessage(Message& message, EncryptionManager& encryptionManager);
+	void parseTextMessagetResponse(const std::vector<uint8_t>& dat, const UserInfo& userInfo);
 };
