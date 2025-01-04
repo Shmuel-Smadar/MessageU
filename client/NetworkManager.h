@@ -12,7 +12,7 @@ public:
     void receiveData(std::vector<uint8_t>& data);
 private:
     std::string IP;
-    int port; //TODO: look for better type for the port
+    uint8_t port;
     boost::asio::io_service ioService;
     boost::asio::ip::tcp::socket socket;
     bool readServerInfo(const std::string& filename);
