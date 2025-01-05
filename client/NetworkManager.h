@@ -2,10 +2,11 @@
 #include <boost/asio.hpp>
 #include <fstream>
 #include <iostream>
+#include "FileManager.h"
 
 class NetworkManager {
 public:
-    NetworkManager();
+    NetworkManager(FileManager fileManager);
     void connect();
     void disconnect();
     void sendData(const std::vector<uint8_t>& data);

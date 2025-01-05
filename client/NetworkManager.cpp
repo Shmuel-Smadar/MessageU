@@ -2,10 +2,32 @@
 
 
 
-NetworkManager::NetworkManager() : socket(ioService) {
-	if (!readServerInfo("server.info")) {
+NetworkManager::NetworkManager(FileManager fileManager) : socket(ioService) {
+
+	try {
+		auto infile = fileManager.openFileIfExists("server.info");
+		if (!infile)
+			throw std::runtime_error("File server.info doesn't exist.");
+		std::string line;
+		if (std::getline(*infile, line)) {
+			size_t pos = line.find(':');
+			if (pos != std::string::npos) {
+				IP = line.substr(0, pos);
+				port = std::stoi(line.substr(pos + 1));
+			}
+			else {
+				throw std::runtime_error("Invalid format of server.info file.");
+			}
+		}
+		else {
+			throw std::runtime_error("Empty file server.info file.");
+		}
+	}
+	catch (std::exception e) {
 		IP = "127.0.0.1";
 		port = 1357;
+		std::cerr << e.what() << std::endl;
+		std::cerr << "using default address. " << IP << ":" << port << std::endl;
 	}
 }
 

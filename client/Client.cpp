@@ -5,10 +5,10 @@ Client::Client()
 	: userInterface(),
 	userInfoList(),
 	currentUser(),
-	networkManager(),
+	fileManager(),
+	networkManager(fileManager),
 	requestBuilder(),
 	responseParser(),
-	fileManager(),
 	encryptionManager(nullptr) {
 	checkRegistration();
 }
