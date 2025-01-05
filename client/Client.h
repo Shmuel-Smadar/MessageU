@@ -1,9 +1,11 @@
 #pragma once
 #include <stdexcept>
+#include <memory>
 #include "CurrentUser.h"
 #include "UserInterface.h"
 #include "UserInfoList.h"
 #include "Utils.h"
+#include "FileManager.h"
 #include "EncryptionManager.h"
 #include "NetworkManager.h"
 #include "RequestBuilder.h"
@@ -36,5 +38,6 @@ private:
     NetworkManager networkManager;
     UserInfoList userInfoList;
     CurrentUser currentUser;
+    FileManager fileManager;
     std::unique_ptr<EncryptionManager> encryptionManager;
 };

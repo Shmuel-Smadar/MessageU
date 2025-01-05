@@ -8,27 +8,31 @@ Client::Client()
 	networkManager(),
 	requestBuilder(),
 	responseParser(),
+	fileManager(),
 	encryptionManager(nullptr) {
 	checkRegistration();
 }
 
 void Client::checkRegistration() {
-	std::ifstream infile("my.info");
-	if (!infile.is_open()) {
+	auto infile = fileManager.openFileIfExists("my.info");
+	if (!infile) {
 		currentUser = CurrentUser();
 		encryptionManager = std::make_unique<EncryptionManager>();
 		return;
 	}
-
 	std::string name, clientID, privateKey;
-	if (!std::getline(infile, name) || !std::getline(infile, clientID) || !std::getline(infile, privateKey, '\0')) {
-		std::cerr << "Error: Incomplete data in my.info file.\n";
-		exit(0);
+	try {
+		std::getline(*infile, name);
+		std::getline(*infile, clientID);
+		std::getline(*infile, privateKey, '\0');
+
+		infile->close();
+		currentUser = CurrentUser(name, clientID);
+		encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
 	}
-	infile.close();
-	currentUser = CurrentUser(name, clientID);
-	// TODO: add try catch when trying to create EncryptionManager with the private key provided in my.info.
-	encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
+	catch (std::exception e) {
+		std::cerr << "incomplete data in my.info file, either fix or delete it to register again." << std::endl;
+	}
 }
 
 
@@ -95,10 +99,15 @@ void Client::registerClient() {
 		networkManager.receiveData(response);
 		networkManager.disconnect();
 		responseParser.parseRegistrationResponse(response, currentUser);
-		std::ofstream file("my.info");
-		file << currentUser.getName() << std::endl;
-		file << currentUser.getClientID() << std::endl;
-		file << Base64Wrapper::encode(encryptionManager->getPrivateKey()) << std::endl;
+		auto outfile = fileManager.createFile("my.info");
+		if (!outfile) {
+			std::cerr << "Error: Cannot create my.info file.\n";
+			return;
+		}
+		*outfile << currentUser.getName() << std::endl;
+		*outfile << currentUser.getClientID() << std::endl;
+		*outfile << Base64Wrapper::encode(encryptionManager->getPrivateKey()) << std::endl;
+		outfile->close();
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -109,10 +118,6 @@ void Client::registerClient() {
 void Client::requestClientsList() {
 
 	try {
-		if (!currentUser.isRegistered()) {
-			userInterface.printText("Please register first.");
-			return;
-		}
 		std::vector<uint8_t> request = requestBuilder.buildClientsListRequest(currentUser);
 		networkManager.connect();
 		networkManager.sendData(request);
