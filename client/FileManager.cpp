@@ -26,7 +26,7 @@ void FileManager::determineExecutableDir() {
 
     executableDir = std::filesystem::path(path);
 #else
-    throw std::runtime_error("Use windows.");
+    throw std::runtime_error("Currently only windows is supported.");
 #endif
 }
 
