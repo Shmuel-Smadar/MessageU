@@ -14,8 +14,13 @@ class ServerCodes:
     RETURNED_AWAITING_MESSAGES = 2104
     ERROR = 9000
 
-class ProtocolLengths:
+class ProtocolByteSizes:
     NAME = 255
     PUBLIC_KEY = 160
-    HEADER = 23
+    HEADER = 23 #CLIENT_ID + VERSION + CODE + PAYLOAD_SIZE = 16 + 1 + 4 + 2 = 23
     CLIENT_ID = 16
+    MESSAGE_ID = 4
+    MESSAGE_TYPE = 1
+    MESSAGE_LENGTH = 4
+    MESSAGE_TYPE = 1
+    MESSAGE_HEADER = 21 #CLIENT_ID + MESSAGE_TYPE + MESSAGE_LENGTH = 16 + 1 + 4 = 21

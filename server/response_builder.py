@@ -4,15 +4,14 @@ import time
 import struct
 from classes import Client, Message
 
-from constants import ProtocolLengths
-from constants import ClientCodes
+from constants import ProtocolByteSizes
 from constants import ServerCodes
 
 class ResponseBuilder:
     
     def build_registration_response(self, name, public_key, db) :
         try:
-            client_id = uuid.uuid4().hex[:32]
+            client_id = uuid.uuid4().hex
             client = Client(ID=client_id, UserName=name, PublicKey=public_key, LastSeen=time.time())
             db.add_client(client)
             payload = bytes.fromhex(client_id)
@@ -29,7 +28,7 @@ class ResponseBuilder:
                 continue
             client_id_bytes = bytes.fromhex(c.ID)
             name_bytes = c.UserName.encode('ascii') + b'\0'
-            name_padded = name_bytes.ljust(255, b'\0')
+            name_padded = name_bytes.ljust(ProtocolByteSizes.NAME, b'\0')
             response_payload += client_id_bytes + name_padded
         return self.build_response(ServerCodes.RETURNED_CLIENT_LIST, response_payload)
     
@@ -38,7 +37,7 @@ class ResponseBuilder:
     
     def build_public_message_sent_response(self, to_client_id, ID):
         payload = bytes.fromhex(to_client_id)
-        id_bytes = ID.to_bytes(4, byteorder='little', signed=False)
+        id_bytes = ID.to_bytes(4, byteorder='little')
         payload += id_bytes
         return self.build_response(ServerCodes.MESSAGE_SENT, payload)
         
@@ -47,9 +46,9 @@ class ResponseBuilder:
         payload = b''
         for message in messages:
             payload += bytes.fromhex(message.FromClient)
-            payload += message.ID.to_bytes(4, byteorder='little', signed=False)
-            payload += message.Type.to_bytes(1, byteorder='little', signed=False)
-            payload += (len(message.Content)).to_bytes(4, byteorder='little', signed=False)
+            payload += message.ID.to_bytes(ProtocolByteSizes.MESSAGE_ID, byteorder='little')
+            payload += message.Type.to_bytes(ProtocolByteSizes.MESSAGE_TYPE, byteorder='little')
+            payload += (len(message.Content)).to_bytes(ProtocolByteSizes.MESSAGE_LENGTH, byteorder='little')
             payload += message.Content
             print(f"Client: {message.FromClient}, ID: {message.ID}, Type: {message.Type}, Content: {message.Content}")
         return self.build_response(ServerCodes.RETURNED_AWAITING_MESSAGES, payload)

@@ -1,5 +1,5 @@
 import uuid
-from constants import ProtocolLengths
+from constants import ProtocolByteSizes
 from constants import ServerCodes
 from response_builder import ResponseBuilder
 from database import Database
@@ -14,8 +14,8 @@ class RequestParser:
         if name_end == -1:
             raise ValueError("Invalid name in registration payload")
         name = payload[:name_end].decode('ascii')
-        public_key = payload[ProtocolLengths.NAME:]
-        if len(public_key) != ProtocolLengths.PUBLIC_KEY:
+        public_key = payload[ProtocolByteSizes.NAME:]
+        if len(public_key) != ProtocolByteSizes.PUBLIC_KEY:
             raise ValueError("Invalid public key length in registration payload")
         if db.client_exists(name):
             return self.response_builder.build_error_response()
@@ -30,7 +30,7 @@ class RequestParser:
         return self.response_builder.build_client_list(client_id, db)
         
     def public_key(self, client_id, payload, db: Database):
-        requested_client_id = payload[:16].hex()
+        requested_client_id = payload[:ProtocolByteSizes.CLIENT_ID].hex()
         print(requested_client_id)
         public_key = db.get_client_by_id(requested_client_id).PublicKey
         if not public_key:
@@ -38,20 +38,22 @@ class RequestParser:
         return self.response_builder.build_public_key_response(public_key)
         
     def message_sent(self, client_id, payload, db: Database):
-        if len(payload) < 21:
+        if len(payload) < ProtocolByteSizes.MESSAGE_HEADER:
             raise ValueError("Payload too short to contain required fields.")
-        sent_client_id = payload[:16].hex()
-        print(sent_client_id)
-        message_type = payload[16]
-        message_size = int.from_bytes(payload[17:21], byteorder='little')
-        expected_length = 21 + message_size
+        sent_client_id = payload[:ProtocolByteSizes.CLIENT_ID].hex()
+        message_type = payload[ProtocolByteSizes.CLIENT_ID]
+        
+        message_size_start = ProtocolByteSizes.CLIENT_ID + ProtocolByteSizes.MESSAGE_TYPE
+        message_size_end = message_size_start + ProtocolByteSizes.MESSAGE_LENGTH
+        message_size = int.from_bytes(payload[message_size_start:message_size_end], byteorder='little')
+        
+        expected_length = ProtocolByteSizes.MESSAGE_HEADER + message_size
         if len(payload) < expected_length:
             raise ValueError("Payload does not contain enough bytes for the specified message size.")
-        content = payload[21:21+message_size]
-        #TODO:solve inconsistenry between request_parser and response_builder
-        message_id = uuid.uuid4().int & (1<<32)-1
-        message = Message(message_id, sent_client_id, client_id, message_type, content)#TODO: Message ID generation
-        print(f"Client: {message.FromClient}, ID: {message.ID}, size: {len(content)}, Content: {content}")
+        content = payload[ ProtocolByteSizes.MESSAGE_HEADER:expected_length]
+        
+        message_id = uuid.uuid4().int & (1 << ProtocolByteSizes.MESSAGE_ID * 8) - 1
+        message = Message(message_id, sent_client_id, client_id, message_type, content)
         db.add_message(message)
         return self.response_builder.build_public_message_sent_response(sent_client_id, message.ID) 
 
