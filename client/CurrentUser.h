@@ -19,7 +19,7 @@ private:
 
 public:
     CurrentUser();
-    CurrentUser(const std::string& name, const std::string& ClientID);
+    CurrentUser(const std::string& name, const std::string& clientID);
 
 
     bool saveToFile();
@@ -31,6 +31,6 @@ public:
     bool setName(const std::string& name);
 
     std::string getClientID() const;
-    void setClientID(const std::string& ClientID);
+    void setClientID(const std::string& clientID);
 
 };

@@ -3,7 +3,7 @@
 CurrentUser::CurrentUser() {
     this->registered = false;
 }
-CurrentUser::CurrentUser(const std::string& name, const std::string& ClientID) {
+CurrentUser::CurrentUser(const std::string& name, const std::string& clientID) {
     this->name = name;
     this->clientID = clientID;
     this->registered = true;
@@ -35,8 +35,8 @@ std::string CurrentUser::getClientID() const {
     return clientID;
 }
 
-void CurrentUser::setClientID(const std::string& id) {
-    clientID = id;
+void CurrentUser::setClientID(const std::string& clientId) {
+    this->clientID = clientId;
 }
 
 bool CurrentUser::isRegistered() const {
