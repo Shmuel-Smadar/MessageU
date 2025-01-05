@@ -8,6 +8,7 @@
 #include "NetworkManager.h"
 #include "RequestBuilder.h"
 #include "ResponseParser.h"
+#include "Base64Wrapper.h"
 
 class Client {
 public:

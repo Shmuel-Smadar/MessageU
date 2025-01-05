@@ -21,14 +21,14 @@ void Client::checkRegistration() {
 	}
 
 	std::string name, clientID, privateKey;
-	if (!std::getline(infile, name) || !std::getline(infile, clientID) || !std::getline(infile, privateKey)) {
+	if (!std::getline(infile, name) || !std::getline(infile, clientID) || !std::getline(infile, privateKey, '\0')) {
 		std::cerr << "Error: Incomplete data in my.info file.\n";
 		exit(0);
 	}
-
 	infile.close();
 	currentUser = CurrentUser(name, clientID);
-	encryptionManager = std::make_unique<EncryptionManager>(privateKey);
+	// TODO: add try catch when trying to create EncryptionManager with the private key provided in my.info.
+	encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
 }
 
 
@@ -95,6 +95,10 @@ void Client::registerClient() {
 		networkManager.receiveData(response);
 		networkManager.disconnect();
 		responseParser.parseRegistrationResponse(response, currentUser);
+		std::ofstream file("my.info");
+		file << currentUser.getName() << std::endl;
+		file << currentUser.getClientID() << std::endl;
+		file << Base64Wrapper::encode(encryptionManager->getPrivateKey()) << std::endl;
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
