@@ -30,7 +30,7 @@ void Client::checkRegistration() {
 		currentUser = CurrentUser(name, clientID);
 		encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		std::cerr << "incomplete data in my.info file, either fix or delete it to register again." << std::endl;
 	}
 }
@@ -130,7 +130,7 @@ void Client::requestClientsList() {
 		userInfoList.printUsers();
 		networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
@@ -150,7 +150,7 @@ void Client::requestPublicKey() {
 	responseParser.parsePublicKeyResponse(response, requestedUser, *encryptionManager);
 	networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
@@ -167,7 +167,8 @@ void Client::requestWaitingMessages() {
 		userInterface.printMessages(messages);
 		networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
 }
@@ -184,7 +185,8 @@ void Client::sendSymmetricKeyRequest() {
 		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
 		networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
 }
@@ -203,7 +205,7 @@ void Client::sendTextMessage() {
 		responseParser.parseTextMessagetResponse(response, requestedUser);
 		networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}
@@ -222,7 +224,7 @@ void Client::sendOwnSymmetricKey() {
 		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
 		networkManager.disconnect();
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		networkManager.disconnect();
 	}

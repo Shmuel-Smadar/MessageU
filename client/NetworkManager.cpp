@@ -23,7 +23,7 @@ NetworkManager::NetworkManager(FileManager fileManager) : socket(ioService) {
 			throw std::runtime_error("Empty file server.info file.");
 		}
 	}
-	catch (std::exception e) {
+	catch (std::exception& e) {
 		IP = "127.0.0.1";
 		port = 1357;
 		std::cerr << e.what() << std::endl;
@@ -61,7 +61,7 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
 void NetworkManager::sendData(const std::vector<uint8_t>& data) {
 	boost::asio::write(socket, boost::asio::buffer(data));
 }
-
+// TODO: fix magic numbers
 void NetworkManager::receiveData(std::vector<uint8_t>& data) {
 	// read response header (version, code, payload size)
 	uint8_t header[7];
