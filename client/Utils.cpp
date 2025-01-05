@@ -18,6 +18,12 @@ namespace Utils {
         buffer.push_back((value >> 16) & 0xFF);
         buffer.push_back((value >> 24) & 0xFF);
     }
+
+    uint16_t Utils::parseUint16(const std::vector<uint8_t>& data) {
+        return static_cast<uint16_t>(data[0]) |
+            (static_cast<uint16_t>(data[1]) << 8);
+    }
+
     uint32_t Utils::parseUint32(const std::vector<uint8_t>& bytes) {
         return static_cast<uint32_t>(bytes[0])
             | (static_cast<uint32_t>(bytes[1]) << 8)

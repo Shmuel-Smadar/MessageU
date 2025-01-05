@@ -8,7 +8,7 @@ std::vector<uint8_t> RequestBuilder::buildRegistrationRequest(const CurrentUser&
 
     std::vector<uint8_t> payload;
     Utils::appendString(payload, currentUser.getName());
-    size_t paddingSize = 255 - currentUser.getName().length();
+    size_t paddingSize = ProtocolByteSizes::ClientName - currentUser.getName().length();
     std::vector<uint8_t> padding(paddingSize, '\0');
     payload.insert(payload.end(), padding.begin(), padding.end());
     Utils::appendString(payload, publicKey);
@@ -46,12 +46,13 @@ std::vector<uint8_t> RequestBuilder::buildWaitingMessagesRequest(CurrentUser& cu
     buffer.insert(buffer.end(), payload.begin(), payload.end());
     return buffer;
 }
-//TODO: check if the empty message should be encrypted.
+
 std::vector<uint8_t> RequestBuilder::buildSymmetricKeyRequest(CurrentUser& currentUser, UserInfo& userInfo, EncryptionManager& encryptionManager) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
     Utils::appendUint16(buffer, RequestType::SendMessage);
-    Message message(userInfo, MessageType::SymmetricKeyRequest, encryptionManager.encryptWithPublicKey(userInfo.getClientID(), ""));
-    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
+    std::string content = encryptionManager.encryptWithPublicKey(userInfo.getClientID(), ""); // content will be a cipher for an empty string
+    Message message(userInfo, MessageType::SymmetricKeyRequest, content);
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + ProtocolByteSizes::MessageHeaderRequest));
     Utils::appendMessage(buffer, message);
     return buffer;
 }
@@ -62,7 +63,7 @@ std::vector<uint8_t> RequestBuilder::buildSendSymmetricKey(CurrentUser& currentU
     encryptionManager.generateSymmetricKey(userInfo.getClientID());
     std::string symmetricKey = encryptionManager.getSymmetricKey(userInfo.getClientID());
     Message message(userInfo, MessageType::SymmetricKeySent, encryptionManager.encryptWithPublicKey(userInfo.getClientID(), symmetricKey));
-    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + ProtocolByteSizes::MessageHeaderRequest));
     Utils::appendMessage(buffer, message);
     return buffer;
 }
@@ -71,7 +72,7 @@ std::vector<uint8_t> RequestBuilder::buildTextMessageRequest(CurrentUser& curren
     Utils::appendUint16(buffer, RequestType::SendMessage);
     std::string cipher = encryptionManager.encryptWithSymmetricKey(userInfo.getClientID(), textMessage);
     Message message(userInfo, MessageType::TextMessageSent, cipher);
-    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + 21));
+    Utils::appendUint32(buffer, static_cast<uint32_t>(message.getContent().size() + ProtocolByteSizes::MessageHeaderRequest));
     Utils::appendMessage(buffer, message);
     return buffer;
 }

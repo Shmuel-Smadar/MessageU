@@ -4,47 +4,57 @@
 void ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
 
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	std::string clientID(data.begin() + 7, data.begin() + 23);
+	size_t pos = ProtocolByteSizes::Header;
+	std::string clientID(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId);
 	currentUser.setClientID(Utils::bytesToHex(clientID));
 	currentUser.setRegistered(true);
 }
 
 void ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	size_t pos = ProtocolSizes::Header;
-	size_t userDataLength = ProtocolSizes::ClientId + ProtocolSizes::ClientName;
+	size_t pos = ProtocolByteSizes::Header;
+	size_t userDataLength = ProtocolByteSizes::ClientId + ProtocolByteSizes::ClientName;
 	while (pos + userDataLength <= data.size()) {
-		std::string clientId(data.begin() + pos, data.begin() + pos + ProtocolSizes::ClientId);
-		pos += ProtocolSizes::ClientId;
+		std::string clientId(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId);
+		pos += ProtocolByteSizes::ClientId;
 
-		std::string clientName(data.begin() + pos, data.begin() + pos + ProtocolSizes::ClientName);
-		pos += ProtocolSizes::ClientName;
+		std::string clientName(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientName);
+		pos += ProtocolByteSizes::ClientName;
 		userInfoList.addUser(Utils::bytesToHex(clientId), Utils::trimAfterNull(clientName));
 	}
 }
 
 void ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	std::string publicKey = std::string(data.begin() + 7, data.begin() + 7 + 160);
+	size_t pos = ProtocolByteSizes::Header;
+	std::string publicKey = std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::PublicKey);
 	encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
 	userInfo.publicKeyReceived();
 }
 
 std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	size_t pos = ProtocolSizes::Header;
+	size_t pos = ProtocolByteSizes::Header;
 	std::vector<Message> messages;
-	while (pos + 16 + 4 + 1 + 4 <= data.size()) {
-		std::string fromClient(data.begin() + pos, data.begin() + pos + 16);
-		pos += 16;
-		uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + 4));
-		pos += 4;
+	while (pos + ProtocolByteSizes::MessageHeaderResponse <= data.size()) {
+		//read clientId
+		std::string fromClient(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId);
+		pos += ProtocolByteSizes::ClientId;
+		//read messagedId
+		std::vector<uint8_t> messageIdBytes(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId);
+		uint32_t messageID = Utils::parseUint32(messageIdBytes);
+		pos += ProtocolByteSizes::MessageId;
+		//read messaged type
 		uint8_t messageType = data[pos];
-		pos += 1;
-		uint32_t contentSize = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + 4));
-		pos += 4;
-		std::string content(reinterpret_cast<const char*>(&data[pos]), contentSize);
-		pos += contentSize;
+		pos += ProtocolByteSizes::MessageType;
+		//read message length
+		std::vector<uint8_t> messageLengthBytes(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageLength);
+		uint32_t messageLength = Utils::parseUint32(messageLengthBytes);
+		pos += ProtocolByteSizes::MessageLength;
+		//read message content based on the length
+		std::string content(reinterpret_cast<const char*>(&data[pos]), messageLength);
+		pos += messageLength;
+		//create a message and send it to function for parsing, finally add it to a vector of messages.
 		Message message(userInfoList.getUserByID(Utils::bytesToHex(fromClient)), messageType, content);
 		parseMessage(message, encryptionManager);
 		messages.emplace_back(message);
@@ -71,25 +81,30 @@ void ResponseParser::parseMessage(Message& message, EncryptionManager& encryptio
 //TODO: func name needs changing...
 void ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + 7, data.begin() + 7 + 16));
-	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
+	size_t pos = ProtocolByteSizes::Header;
+	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId));
+	pos += ProtocolByteSizes::ClientId;
+	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId));
 }
 void ResponseParser::parseTextMessagetResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
-	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + 7, data.begin() + 7 + 16));
-	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + 23, data.begin() + 23 + 4));
+	size_t pos = ProtocolByteSizes::Header;
+	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId));
+	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId));
 }
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
-	std::unique_ptr<ResponseHeader> header(new ResponseHeader());
-	header->version = static_cast<uint8_t>(data[0]);
-	header->code = static_cast<uint16_t>(data[1]) |
-		(static_cast<uint16_t>(data[2]) << 8);
-	header->payloadSize = static_cast<uint32_t>(data[3]) |
-		(static_cast<uint32_t>(data[4]) << 8) |
-		(static_cast<uint32_t>(data[5]) << 16) |
-		(static_cast<uint32_t>(data[6]) << 24);
-	if (header->code == ServerCodes::Error)
+	if (data.size() < ProtocolByteSizes::Header) {
+		throw std::runtime_error("Server response does not meet header sizes defined in the protocol.");
+	}
+
+	uint8_t version = data[0];
+	uint16_t code = Utils::parseUint16(std::vector<uint8_t>(data.begin(), data.begin() + ProtocolByteSizes::Code));
+	uint32_t payloadSize = Utils::parseUint32(std::vector<uint8_t>(data.begin(), data.begin() + ProtocolByteSizes::PayloadSize));
+
+	if (code == ServerCodes::Error) {
 		throw std::runtime_error("Server responded with an error.");
-	return header;
+	}
+	return std::make_unique<ResponseHeader>(version, code, payloadSize);
 }
+

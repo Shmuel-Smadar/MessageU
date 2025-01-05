@@ -17,10 +17,19 @@ namespace MessageType {
 	constexpr uint8_t TextMessageSent = 3;
 }
 
-namespace ProtocolSizes {
-	constexpr size_t Header = 7;
+namespace ProtocolByteSizes {
+	constexpr size_t Version = 1;
+	constexpr size_t Code = 2;
+	constexpr size_t PayloadSize = 4;
+	constexpr size_t Header = 7; // Version + Code + PayloadSize = 1 + 2 + 4 = 7
 	constexpr size_t ClientName = 255;
 	constexpr size_t ClientId = 16;
+	constexpr size_t PublicKey = 160;
+	constexpr size_t MessageType = 1;
+	constexpr size_t MessageLength = 4;
+	constexpr size_t MessageHeaderRequest = 21; //ClientId + MessageType + MessageLength = 16 + 1 + 4 = 21
+	constexpr size_t MessageId = 4;
+	constexpr size_t MessageHeaderResponse = 25; //ClientId + MessageType + MessageLength + MessageId = 16 + 1 + 4 + 4 = 25
 }
 
 struct ResponseHeader {
