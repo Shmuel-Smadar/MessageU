@@ -60,5 +60,8 @@ class RequestParser:
     def awaiting_messages(self, client_id, db: Database):
        messages = db.get_messages_for_client(client_id)
        return self.response_builder.build_awaiting_messages_response(messages)
+   
+    def invalid_code(self):
+        return self.response_builder.build_error_response()
        
        
