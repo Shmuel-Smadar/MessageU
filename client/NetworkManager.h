@@ -3,10 +3,12 @@
 #include <boost/asio.hpp>
 #include <fstream>
 #include <iostream>
-#include "FileManager.h"
 #include <vector>
 #include <cstdint>
 #include <stdexcept>
+#include "ProtocolConstants.h"
+#include "FileManager.h"
+#include "Utils.h"
 
 class NetworkManager {
 public:

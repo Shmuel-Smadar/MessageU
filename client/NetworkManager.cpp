@@ -62,16 +62,18 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
 void NetworkManager::sendData(const std::vector<uint8_t>& data) {
     boost::asio::write(socket, boost::asio::buffer(data));
 }
-// TODO: fix magic numbers
+
 void NetworkManager::receiveData(std::vector<uint8_t>& data) {
     // read response header (version, code, payload size)
-    uint8_t header[7];
-    size_t bytesRead = boost::asio::read(socket, boost::asio::buffer(header, 7));
-    if (bytesRead != 7)
+    uint8_t header[ProtocolByteSizes::Header];
+    size_t bytesRead = boost::asio::read(socket, boost::asio::buffer(header, ProtocolByteSizes::Header));
+    if (bytesRead != ProtocolByteSizes::Header)
         throw std::runtime_error("Message received from the server does not have proper headers.");
     // extract the payload size 
-    uint32_t payloadSize = header[3] | (header[4] << 8) | (header[5] << 16) | (header[6] << 24);
-    data.insert(data.end(), header, header + 7);
+    std::vector<uint8_t> sizeBytes(header + ProtocolByteSizes::Version + ProtocolByteSizes::Code,
+        header + ProtocolByteSizes::Header);
+    uint32_t payloadSize = Utils::parseUint32(sizeBytes);
+    data.insert(data.end(), header, header + ProtocolByteSizes::Header);
 
     // read payload according to the payload size
     if (payloadSize > 0) {
