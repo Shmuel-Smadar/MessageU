@@ -68,5 +68,5 @@ std::string EncryptionManager::decryptWithSymmetricKey(const std::string& client
     if (it != symmetricKeys.end()) {
         return it->second->decrypt(ciphertext.c_str(), ciphertext.size());
     }
-    throw std::runtime_error("Symmetric key of the requested user was not found.");
+    return "can't decrypt message";
 }
