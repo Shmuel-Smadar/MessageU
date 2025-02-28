@@ -29,8 +29,8 @@ public:
 
 	void publicKeyReceived();
 	void symmetricKeyReceived();
-	void otherUserRequestedSymmericKey();
-	void currentUserRequestedSymmericKey();
+	void otherUserRequestedSymmetricKey();
+	void currentUserRequestedSymmetricKey();
 private:
 	std::string name;
 	std::string clientID;

@@ -27,7 +27,7 @@ void UserInfo::publicKeyReceived() {
 void UserInfo::symmetricKeyReceived() {
 	this->symmetricKeyStatus = SymmetricKeyStatus::KeyReceived;
 }
-void UserInfo::otherUserRequestedSymmericKey() {
+void UserInfo::otherUserRequestedSymmetricKey() {
 	if (this->symmetricKeyStatus == SymmetricKeyStatus::RequestedByCurrentUser) {
 		this->symmetricKeyStatus = SymmetricKeyStatus::RequestedByBoth;
 	}
@@ -36,7 +36,7 @@ void UserInfo::otherUserRequestedSymmericKey() {
 	}
 }
 
-void UserInfo::currentUserRequestedSymmericKey() {
+void UserInfo::currentUserRequestedSymmetricKey() {
 	if (this->symmetricKeyStatus == SymmetricKeyStatus::RequestedByOtherUser) {
 		this->symmetricKeyStatus = SymmetricKeyStatus::RequestedByBoth;
 	}
