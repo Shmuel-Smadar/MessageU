@@ -66,7 +66,7 @@ void ResponseParser::parseMessage(Message& message, EncryptionManager& encryptio
 	UserInfo userInfo = message.getUser();
 	std::string senderClientId = message.getSenderClientId();
 	if (message.getMessageType() == MessageType::SymmetricKeyRequest) {
-		userInfo.otherUserRequestedSymmericKey();
+		userInfo.otherUserRequestedSymmetricKey();
 	}
 	else if (message.getMessageType() == MessageType::SymmetricKeySent) {
 		encryptionManager.storeSymmetricKey(senderClientId, encryptionManager.decryptWithPrivateKey(message.getContent()));
