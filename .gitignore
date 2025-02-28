@@ -14,4 +14,4 @@
 
 # Keep .gitignore itself
 !.gitignore
-/packages/boost.1.87.0/lib/native/include/boost
+/client/packages

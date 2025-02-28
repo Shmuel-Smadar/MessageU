@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{43b40a4f-2fbb-4969-80d1-cfb89b6275a4}</ProjectGuid>
-    <RootNamespace>MessageU</RootNamespace>
+    <ProjectGuid>{122b5a65-0621-4350-9e13-c935007e966d}</ProjectGuid>
+    <RootNamespace>client</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,52 +131,43 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="client\AESWrapper.cpp" />
-    <ClCompile Include="client\Base64Wrapper.cpp" />
-    <ClCompile Include="client\Client.cpp" />
-    <ClCompile Include="client\CurrentUser.cpp" />
-    <ClCompile Include="client\EncryptionManager.cpp" />
-    <ClCompile Include="client\FileManager.cpp" />
-    <ClCompile Include="client\main.cpp" />
-    <ClCompile Include="client\Message.cpp" />
-    <ClCompile Include="client\NetworkManager.cpp" />
-    <ClCompile Include="client\RequestBuilder.cpp" />
-    <ClCompile Include="client\ResponseParser.cpp" />
-    <ClCompile Include="client\RSAWrapper.cpp" />
-    <ClCompile Include="client\UserInfo.cpp" />
-    <ClCompile Include="client\UserInfoList.cpp" />
-    <ClCompile Include="client\UserInterface.cpp" />
-    <ClCompile Include="client\Utils.cpp" />
+    <ClCompile Include="AESWrapper.cpp" />
+    <ClCompile Include="Base64Wrapper.cpp" />
+    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CurrentUser.cpp" />
+    <ClCompile Include="EncryptionManager.cpp" />
+    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Message.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="RequestBuilder.cpp" />
+    <ClCompile Include="ResponseParser.cpp" />
+    <ClCompile Include="RSAWrapper.cpp" />
+    <ClCompile Include="UserInfo.cpp" />
+    <ClCompile Include="UserInfoList.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
+    <ClInclude Include="AESWrapper.h" />
+    <ClInclude Include="Base64Wrapper.h" />
+    <ClInclude Include="Client.h" />
+    <ClInclude Include="CurrentUser.h" />
+    <ClInclude Include="EncryptionManager.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="ProtocolConstants.h" />
+    <ClInclude Include="RequestBuilder.h" />
+    <ClInclude Include="ResponseParser.h" />
+    <ClInclude Include="RSAWrapper.h" />
+    <ClInclude Include="UserInfo.h" />
+    <ClInclude Include="UserInfoList.h" />
+    <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
-    <None Include="README.md" />
-    <None Include="server\classes.py" />
-    <None Include="server\constants.py" />
-    <None Include="server\database.py" />
-    <None Include="server\protocol.py" />
-    <None Include="server\request_parser.py" />
-    <None Include="server\response_builder.py" />
-    <None Include="server\server.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="client\AESWrapper.h" />
-    <ClInclude Include="client\Base64Wrapper.h" />
-    <ClInclude Include="client\Client.h" />
-    <ClInclude Include="client\CurrentUser.h" />
-    <ClInclude Include="client\EncryptionManager.h" />
-    <ClInclude Include="client\FileManager.h" />
-    <ClInclude Include="client\Message.h" />
-    <ClInclude Include="client\NetworkManager.h" />
-    <ClInclude Include="client\ProtocolConstants.h" />
-    <ClInclude Include="client\RequestBuilder.h" />
-    <ClInclude Include="client\ResponseParser.h" />
-    <ClInclude Include="client\RSAWrapper.h" />
-    <ClInclude Include="client\UserInfo.h" />
-    <ClInclude Include="client\UserInfoList.h" />
-    <ClInclude Include="client\UserInterface.h" />
-    <ClInclude Include="client\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
