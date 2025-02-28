@@ -8,6 +8,10 @@
 !*.cpp
 !*.h
 !*.py
+!*.sln
+!*.vcxproj
+!*.vcxproj.filters
 
 # Keep .gitignore itself
 !.gitignore
+/packages/boost.1.87.0/lib/native/include/boost
