@@ -1,3 +1,11 @@
+/*
+ * File Name: RSAWrapper .h
+ *
+ * This file is responsible for managing RSA encryption and decryption in the app.
+ * uses CryptoPP library and is provided by the university.
+ */
+
+
 #pragma once
 
 #include <osrng.h>

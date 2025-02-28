@@ -1,3 +1,13 @@
+/*
+ * File Name: ResponseParser.h
+ *
+ * This file is responsible for parsing the server responses
+ * for the defined operations and calling to functions that are responsible for
+ * managing the data structures and encryption appropriately.
+ */
+
+
+
 #pragma once
 
 #include <vector>

@@ -1,3 +1,11 @@
+/*
+ * File Name: UserInfoList.h
+ *
+ * This file is responsible for managing a list of UserInfo objects
+ * for easing the management of all the users.
+ */
+
+
 #pragma once
 #include <string>
 #include <vector>

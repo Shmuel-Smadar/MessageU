@@ -1,3 +1,9 @@
+/*
+ * File Name: CurrentUser.h
+ *
+ * This file is responsible for managing the state of the current user.
+ */
+
 #pragma once
 
 #include "UserInfo.h"

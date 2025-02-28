@@ -1,3 +1,11 @@
+/*
+ * File Name: NetworkManager.h
+ *
+ * This file is responsible for Handling network communication with the server using Boost.
+ * manages connecting, disconnecting, sending, and receiving data,
+ * uses 'server.info' file to get the server information, otherwise uses default values.
+ */
+
 #pragma once
 
 #include <boost/asio.hpp>

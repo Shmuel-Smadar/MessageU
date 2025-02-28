@@ -1,3 +1,11 @@
+/*
+ * File Name: Message.h
+ *
+ * This file represents a message in the app, store sender information, type of the message
+ * and the decrypted content.
+ */
+
+
 #pragma once
 
 #include <string>

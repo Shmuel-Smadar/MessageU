@@ -1,3 +1,11 @@
+/*
+ * File Name: AESWrapper .h
+ *
+ * This file is responsible for managing AES encryption and decryption in the app.
+ * uses CryptoPP library and is provided by the university.
+ */
+
+
 #pragma once
 
 #include <string>

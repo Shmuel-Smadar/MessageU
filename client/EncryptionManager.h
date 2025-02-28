@@ -1,3 +1,11 @@
+/*
+ * File Name: EncryptionManager.h
+ *
+ * This file is responsible for Managing encryption and decryption operations using both RSA and AES.
+ * also handles keys storage.
+ * (using wrappers for CryptoPP library provided by the university.)
+ */
+
 #pragma once
 
 #include "RSAWrapper.h"

@@ -1,3 +1,9 @@
+/*
+* File Name: Client.h
+* This file is the core of the program, gets an input from the user,
+* and directs the flow of execution according to that input.
+*/
+
 #pragma once
 #include <stdexcept>
 #include <memory>

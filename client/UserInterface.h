@@ -1,3 +1,11 @@
+/*
+ * File Name: UserInterface.h
+ *
+ * This file is responsible for handling user interactions, like displaying the menu,
+ * receiving user input, and printing messages.
+ */
+
+
 #pragma once
 
 #include <string>

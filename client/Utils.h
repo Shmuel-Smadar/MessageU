@@ -1,3 +1,10 @@
+/*
+ * File Name: Utils.h
+ *
+ * This file is responsible for providing utility functions for byte operations,
+ * buffers management and various conversions.
+ */
+
 #pragma once
 #include <sstream>
 #include <iomanip>

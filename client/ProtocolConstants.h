@@ -1,3 +1,12 @@
+/*
+ * File Name: ProtocolConstants.h
+ *
+ * This file defines protocol-related constants, including request types,
+ * message types, server response codes, byte sizes for the defined components,
+ * and a struct for the header.
+ */
+
+
 #pragma once
 #include <cstdint>
 

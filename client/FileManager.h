@@ -1,3 +1,9 @@
+/*
+ * File Name: FileManager.h
+ *
+ * This file is responsible for handling file operations, including opening and creating files
+ * in the executable (exe) directory. currently supports windows only.
+ */
 #pragma once
 
 #include <filesystem>

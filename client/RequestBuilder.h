@@ -1,3 +1,11 @@
+/*
+ * File Name: RequestBuilder.h
+ *
+ * This file is responsible for constructing requests for the
+ * various operations the user can perform. (like registration, exchanging keys and etc)
+ */
+
+
 #pragma once
 
 #include <vector>

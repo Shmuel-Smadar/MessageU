@@ -1,3 +1,9 @@
+/*
+ * File Name: UserInfo.h
+ *
+ * This file is responsible for storing and managing data and state of other users in the same server.
+ */
+
 #pragma once
 
 #include <string>
