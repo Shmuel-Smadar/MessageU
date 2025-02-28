@@ -12,8 +12,6 @@
 
 class RequestBuilder {
 private:
-	uint8_t clientVersion = 1;
-
 	std::vector<uint8_t> buildRequestHeaders(const CurrentUser& currentUser);
 
 public:

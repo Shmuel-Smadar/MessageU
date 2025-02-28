@@ -79,7 +79,7 @@ std::vector<uint8_t> RequestBuilder::buildTextMessageRequest(CurrentUser& curren
 
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
     std::vector<uint8_t> buffer = Utils::hexStringToBytes(currentUser.getClientID());
-    buffer.push_back(clientVersion);
+    buffer.push_back(Version::ClientVersion);
     return buffer;
 }
 

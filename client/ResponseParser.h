@@ -12,8 +12,6 @@
 
 class ResponseParser {
 private:
-	uint8_t clientVersion = 1;
-
 	std::unique_ptr<ResponseHeader> parseResponseHeaders(const std::vector<uint8_t>& data);
 
 public:

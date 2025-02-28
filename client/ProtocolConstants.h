@@ -8,6 +8,9 @@ namespace RequestType {
 	constexpr uint16_t SendMessage = 603;
 	constexpr uint16_t AwaitingMessages = 604;
 }
+namespace Version {
+	constexpr uint8_t ClientVersion = 1;
+}
 namespace ServerCodes {
 	constexpr uint16_t Error = 9000;
 }
