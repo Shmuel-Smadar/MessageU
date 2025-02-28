@@ -202,7 +202,7 @@ void Client::sendTextMessage() {
 		networkManager.sendData(request);
 		std::vector<uint8_t> response;
 		networkManager.receiveData(response);
-		responseParser.parseTextMessagetResponse(response, requestedUser);
+		responseParser.parseTextMessageResponse(response, requestedUser);
 		networkManager.disconnect();
 	}
 	catch (std::exception& e) {

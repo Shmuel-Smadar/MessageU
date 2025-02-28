@@ -31,5 +31,5 @@ public:
 	std::vector<Message> parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager);
 	void parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo);
 	void parseMessage(Message& message, EncryptionManager& encryptionManager);
-	void parseTextMessagetResponse(const std::vector<uint8_t>& dat, const UserInfo& userInfo);
+	void parseTextMessageResponse(const std::vector<uint8_t>& dat, const UserInfo& userInfo);
 };

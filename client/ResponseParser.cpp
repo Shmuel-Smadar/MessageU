@@ -86,7 +86,7 @@ void ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>
 	pos += ProtocolByteSizes::ClientId;
 	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId));
 }
-void ResponseParser::parseTextMessagetResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
+void ResponseParser::parseTextMessageResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	size_t pos = ProtocolByteSizes::Header;
 	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId));
