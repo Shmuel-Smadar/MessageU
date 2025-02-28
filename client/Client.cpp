@@ -194,7 +194,7 @@ void Client::sendSymmetricKeyRequest() {
 void Client::sendTextMessage() {
 	try {
 		networkManager.connect();
-		std::string targetName = userInterface.getInput("Enter username to send a messgae to: ");
+		std::string targetName = userInterface.getInput("Enter username to send a message to: ");
 		std::string textMessage = userInterface.getInput("Enter the message you'de like to send to this user: ");
 		UserInfo requestedUser = userInfoList.getUserByName(targetName);
 		
