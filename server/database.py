@@ -2,7 +2,7 @@ import sqlite3
 from typing import List, Optional
 from classes import Client, Message
 
-DATABASE_FILE = 'MessageU-server.db'
+DATABASE_FILE = 'defensive.db'
 
 class Database:
     def __init__(self):
