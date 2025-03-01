@@ -2,8 +2,10 @@
 
 EncryptionManager::EncryptionManager()
     : rsaPrivate(),
+    //we use the private key generated to create a corresponding public key
     rsaPublic(rsaPrivate.getPublicKey()) {}
 
+//we use the private key given to create a corresponding public key
 EncryptionManager::EncryptionManager(const std::string& privateKeyStr)
     : rsaPrivate(privateKeyStr),
     rsaPublic(rsaPrivate.getPublicKey()) {}
@@ -36,12 +38,13 @@ std::string EncryptionManager::decryptWithPrivateKey(const std::string& cipherte
     return rsaPrivate.decrypt(ciphertext);
 }
 
+// generate a symmetric key for the corresponding clientID
 void EncryptionManager::generateSymmetricKey(const std::string& clientID) {
     unsigned char key[AESWrapper::DEFAULT_KEYLENGTH];
     AESWrapper::GenerateKey(key, AESWrapper::DEFAULT_KEYLENGTH);
     symmetricKeys[clientID] = std::make_unique<AESWrapper>(key, AESWrapper::DEFAULT_KEYLENGTH);
 }
-
+// return a symmetric key for the corresponding clientID, if it wasn't generated throw an error
 std::string EncryptionManager::getSymmetricKey(const std::string& clientID) const {
     auto it = symmetricKeys.find(clientID);
     if (it != symmetricKeys.end()) {

@@ -14,12 +14,14 @@ Client::Client()
 }
 
 void Client::checkRegistration() {
+	//check if the file "my.info" exists. 
 	auto infile = fileManager.openFileIfExists("my.info");
-	if (!infile) {
+	if (!infile) { 
 		currentUser = CurrentUser();
 		encryptionManager = std::make_unique<EncryptionManager>();
 		return;
 	}
+	// if my.info exists, we try to use its data to initialize currentUser and encryptionManager.
 	std::string name, clientID, privateKey;
 	try {
 		std::getline(*infile, name);
@@ -50,7 +52,7 @@ void Client::handleUserSelection(int selection) {
 		registerClient();
 		return;
 	}
-	// if the user did not chose to register, inform them that it is required for any other action.
+	// if the user did not chose to register yet, inform them that it is required for any other action.
 	else if (!currentUser.isRegistered()) { 
 		userInterface.printText("Please register first.");
 		return;
@@ -101,9 +103,10 @@ void Client::registerClient() {
 		responseParser.parseRegistrationResponse(response, currentUser);
 		auto outfile = fileManager.createFile("my.info");
 		if (!outfile) {
-			std::cerr << "Error: Cannot create my.info file.\n";
+			std::cerr << "Error: Cannot create my.info file." << std::endl;
 			return;
 		}
+		// write current user info into my.info file for future runs of the program.
 		*outfile << currentUser.getName() << std::endl;
 		*outfile << currentUser.getClientID() << std::endl;
 		*outfile << Base64Wrapper::encode(encryptionManager->getPrivateKey()) << std::endl;
@@ -116,7 +119,6 @@ void Client::registerClient() {
 }
 
 void Client::requestClientsList() {
-
 	try {
 		std::vector<uint8_t> request = requestBuilder.buildClientsListRequest(currentUser);
 		networkManager.connect();

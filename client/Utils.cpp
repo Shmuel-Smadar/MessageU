@@ -30,6 +30,7 @@ namespace Utils {
             | (static_cast<uint32_t>(bytes[2]) << 16)
             | (static_cast<uint32_t>(bytes[3]) << 24);
     }
+    // appends the type Message into a given buffer
     void Utils::appendMessage(std::vector<uint8_t>& buffer, const Message& message) {
         appendToBuffer(buffer, hexStringToBytes(message.getSenderClientId()));
         buffer.push_back(message.getMessageType());
@@ -46,7 +47,8 @@ namespace Utils {
 
     std::string Utils::hexToBytes(const std::string& hex) {
         std::string bytes;
-        if (hex.length() % 2 != 0) return ""; // Invalid hex string
+        if (hex.length() % 2 != 0) 
+            throw std::invalid_argument("Hex string must have an even length.");
         for (size_t i = 0; i < hex.length(); i += 2) {
             std::string byteString = hex.substr(i, 2);
             char byte = static_cast<char>(strtol(byteString.c_str(), nullptr, 16));
@@ -55,6 +57,7 @@ namespace Utils {
         return bytes;
     }
 
+    /* a function that cast a string into an int, supporting negative or positive leading sign. */
     int Utils::stringToInt(const std::string& str)
     {
         if (str.empty())
@@ -74,20 +77,21 @@ namespace Utils {
         }
 
         if (start == str.size())
-            throw std::invalid_argument("sign character only.");
+            throw std::invalid_argument("Sign character only.");
 
         int result = 0;
 
         for (int i = start; i < str.size(); ++i)
         {
             if (str[i] < '0' || str[i] > '9')
-                throw std::invalid_argument("invalid Integer");
+                throw std::invalid_argument("Invalid Integer");
 
             result = result * 10 - (str[i] - '0');
         }
         return negate ? result : -result;
     }
 }
+// a function that trims the string after this first '\0'
 std::string Utils::trimAfterNull(const std::string& str) {
     size_t pos = str.find('\0');
     if (pos != std::string::npos)
