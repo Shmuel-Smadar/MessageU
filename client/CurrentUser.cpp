@@ -9,17 +9,6 @@ CurrentUser::CurrentUser(const std::string& name, const std::string& clientID) {
     this->registered = true;
 }
 
-bool CurrentUser::saveToFile() {
-    std::ofstream outfile("my.info", std::ios::binary);
-    if (!outfile.is_open()) return false;
-
-    outfile << name << "\n";
-    outfile << Utils::bytesToHex(clientID) << "\n";
-
-    outfile.close();
-    return true;
-}
-
 std::string CurrentUser::getName() const {
     return name;
 }

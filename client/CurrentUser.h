@@ -27,9 +27,6 @@ public:
     CurrentUser();
     CurrentUser(const std::string& name, const std::string& clientID);
 
-
-    bool saveToFile();
-
     bool isRegistered() const;
     void setRegistered(bool status);
 
