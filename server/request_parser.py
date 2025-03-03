@@ -1,3 +1,7 @@
+# filename: request_parser.py
+# this file is responsible for extracting data from the requests on the client,
+# doing various operation on them and calling the apropiate function to create the response
+
 import uuid
 from constants import ProtocolByteSizes
 from constants import ServerCodes

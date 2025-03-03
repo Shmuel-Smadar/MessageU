@@ -1,4 +1,5 @@
-
+# filename: classes.py
+# this file contains classes which defines are database entities
 import time
 
 class Client:

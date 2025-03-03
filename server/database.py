@@ -1,3 +1,6 @@
+# filename: database.py
+# this file manages all database operations
+
 import sqlite3
 from typing import List, Optional
 from classes import Client, Message

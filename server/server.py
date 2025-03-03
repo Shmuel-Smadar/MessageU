@@ -1,3 +1,7 @@
+# filename: server.py
+# this file is responsible for creating the server and listening for connections from clients
+# gathering the data, sending it for parsing and sending the response.
+
 import socket
 import selectors
 import os
