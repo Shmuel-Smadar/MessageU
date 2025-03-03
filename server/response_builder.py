@@ -21,7 +21,6 @@ class ResponseBuilder:
             payload = bytes.fromhex(client_id)
             return self.build_response(ServerCodes.REGISTRATION_SUCCESSFUL, payload)
         except Exception as ex:
-            print(f"Error in handle_registration: {ex}")
             return self.build_response(ServerCodes.ERROR, b'')
     
     def build_client_list(self, client_id, db):
@@ -54,7 +53,6 @@ class ResponseBuilder:
             payload += message.Type.to_bytes(ProtocolByteSizes.MESSAGE_TYPE, byteorder='little')
             payload += (len(message.Content)).to_bytes(ProtocolByteSizes.MESSAGE_LENGTH, byteorder='little')
             payload += message.Content
-            print(f"Client: {message.FromClient}, ID: {message.ID}, Type: {message.Type}, Content: {message.Content}")
         return self.build_response(ServerCodes.RETURNED_AWAITING_MESSAGES, payload)
         
     def build_error_response(self):

@@ -58,16 +58,6 @@ class Database:
         with self.conn:
             rows = self.conn.execute(query, params).fetchall()
         return [Client(**row) for row in rows]
-
-    def print_clients_table(self):
-        with self.conn:
-            cursor = self.conn.execute('SELECT * FROM clients')
-            rows = cursor.fetchall()
-            columns = [description[0] for description in cursor.description]
-            print("\t".join(columns))
-            print("-" * 40)
-            for row in rows:
-                print("\t".join(str(item) for item in row))
     
     def get_client_by_id(self, client_id: str) -> Client:
         with self.conn:
