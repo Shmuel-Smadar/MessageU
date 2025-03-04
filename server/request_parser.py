@@ -41,7 +41,7 @@ class RequestParser:
         
     def message_sent(self, client_id, payload, db: Database):
         if len(payload) < ProtocolByteSizes.MESSAGE_HEADER:
-            raise ValueError("Payload too short to contain required fields.")
+            return self.invalid_request()
         db.update_last_seen(client_id)
         sent_client_id = payload[:ProtocolByteSizes.CLIENT_ID].hex()
         message_type = payload[ProtocolByteSizes.CLIENT_ID]
@@ -52,7 +52,7 @@ class RequestParser:
         
         expected_length = ProtocolByteSizes.MESSAGE_HEADER + message_size
         if len(payload) < expected_length:
-            raise ValueError("Payload does not contain enough bytes for the specified message size.")
+            return self.invalid_request()
         db.update_last_seen(client_id)
         content = payload[ ProtocolByteSizes.MESSAGE_HEADER:expected_length]
         

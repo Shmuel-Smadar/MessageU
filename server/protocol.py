@@ -38,7 +38,7 @@ class Protocol:
             elif code == ClientCodes.AWAITING_MESSAGES:
                 response = self.request_parser.awaiting_messages(client_id.hex(), db)
             else:
-                raise ValueError("Invalid code")
+                response = self.request_parser.invalid_request()
         except:
             response = self.request_parser
         data['response'] += response

@@ -58,7 +58,10 @@ class ResponseBuilder:
     def build_error_response(self):
         return self.build_response(ServerCodes.ERROR, b'')
     
-    def build_response(self, code, payload):
-        header = struct.pack('<BHI', ServerCodes.VERSION, code, len(payload))
-        return header + payload
-    
+def build_response(self, code, payload):
+    version = ServerCodes.VERSION.to_bytes(ProtocolByteSizes.VERSION, byteorder='little')
+    code_bytes = code.to_bytes(ProtocolByteSizes.CODE, byteorder='little')
+    payload_size = len(payload).to_bytes(ProtocolByteSizes.PAYLOAD_SIZE, byteorder='little')
+
+    header = version + code_bytes + payload_size
+    return header + payload
