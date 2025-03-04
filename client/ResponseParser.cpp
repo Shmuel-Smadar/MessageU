@@ -99,8 +99,14 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 	}
 
 	uint8_t version = data[0];
-	uint16_t code = Utils::parseUint16(std::vector<uint8_t>(data.begin(), data.begin() + ProtocolByteSizes::Code));
-	uint32_t payloadSize = Utils::parseUint32(std::vector<uint8_t>(data.begin(), data.begin() + ProtocolByteSizes::PayloadSize));
+	uint16_t code = Utils::parseUint16(
+		std::vector<uint8_t>(data.begin() + ProtocolByteSizes::Version,
+			data.begin() + ProtocolByteSizes::Version + ProtocolByteSizes::Code)
+	);
+	uint32_t payloadSize = Utils::parseUint32(
+		std::vector<uint8_t>(data.begin() + ProtocolByteSizes::Version + ProtocolByteSizes::Code,
+			data.begin() + ProtocolByteSizes::Version + ProtocolByteSizes::Code + ProtocolByteSizes::PayloadSize)
+	);
 
 	if (code == ServerCodes::Error) {
 		throw std::runtime_error("Server responded with an error.");
