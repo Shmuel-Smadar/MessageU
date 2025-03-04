@@ -13,6 +13,7 @@ class Database:
         self.conn.row_factory = sqlite3.Row
         self.create_tables()
 
+    # a function that creates the tables for the clients and the messages if they dont exist yet.
     def create_tables(self):
         with self.conn:
             self.conn.execute('''
@@ -34,21 +35,21 @@ class Database:
                 FOREIGN KEY (FromClient) REFERENCES clients(ID)
             )
         ''')
-
+    # a function that checks for an existance of a client.
     def client_exists(self, username: str) -> bool:
         with self.conn:
             result = self.conn.execute(
                 'SELECT 1 FROM clients WHERE UserName = ?', (username,)
             ).fetchone()
         return result is not None
-
+    # a function that adds a client
     def add_client(self, client: Client):
         with self.conn:
             self.conn.execute('''
                 INSERT INTO clients (ID, UserName, PublicKey, LastSeen)
                 VALUES (?, ?, ?, ?)
             ''', (client.ID, client.UserName, client.PublicKey, client.LastSeen))
-
+    # a function that returns all the clients except for one that can be excluded.
     def get_clients(self, exclude_id: Optional[str] = None) -> List[Client]:
         query = 'SELECT * FROM clients'
         params = ()
@@ -58,14 +59,14 @@ class Database:
         with self.conn:
             rows = self.conn.execute(query, params).fetchall()
         return [Client(**row) for row in rows]
-    
+    # a function that returns a client by its Id
     def get_client_by_id(self, client_id: str) -> Client:
         with self.conn:
             row = self.conn.execute(
                 'SELECT * FROM clients WHERE ID = ?', (client_id,)
             ).fetchone()
         return Client(**row) if row else None
-
+    # a function that returns a client by its username
     def get_client_by_username(self, username: str) -> Optional[Client]:
         with self.conn:
             row = self.conn.execute(
