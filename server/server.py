@@ -1,10 +1,7 @@
-# filename: server.py
-# this file is responsible for creating the server and listening for connections from clients
-# gathering the data, sending it for parsing and sending the response.
-
 import socket
 import selectors
 import os
+import traceback
 from database import Database
 from protocol import Protocol
 
@@ -19,10 +16,16 @@ def get_port():
                 port = int(f.read().strip())
                 return port
             except ValueError:
-                print(f"Invalid port number in myport.info. Using default port {DEFAULT_PORT}.")
+                print(f"Invalid port number in {PORT_FILE}. Using default port {DEFAULT_PORT}.")
     else:
         print(f"Port file {PORT_FILE} not found. Using default port {DEFAULT_PORT}.")
     return DEFAULT_PORT
+
+def unregister_socket(sel, sock):
+    try:
+        sel.unregister(sock)
+    except Exception:
+        pass
 
 def main():
     port = get_port()
@@ -31,10 +34,14 @@ def main():
 
     db = Database()
     protocol = Protocol()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(server_address)
-    sock.listen()
-    sock.setblocking(False)
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(server_address)
+        sock.listen()
+        sock.setblocking(False)
+    except Exception as e:
+        print(f"Failed to start the server: {e}")
+        return
 
     sel = selectors.DefaultSelector()
     sel.register(sock, selectors.EVENT_READ, data=None)
@@ -42,12 +49,21 @@ def main():
 
     try:
         while True:
-            events = sel.select(timeout=None)
+            try:
+                events = sel.select(timeout=None)
+            except Exception as e:
+                print(f"Selector error: {e}")
+                continue
+
             for key, mask in events:
-                if key.data is None:
-                    accept_connection(key.fileobj, sel) # New connection
-                else:
-                    service_connection(key, mask, sel, db, protocol) # Existing connection
+                try:
+                    if key.data is None:
+                        accept_connection(key.fileobj, sel)
+                    else:
+                        service_connection(key, mask, sel, db, protocol)
+                except Exception as e:
+                    print(f"Error handling event: {e}")
+                    continue
     except KeyboardInterrupt:
         print("Server is shutting down.")
     finally:
@@ -55,28 +71,42 @@ def main():
         db.close()
 
 def accept_connection(sock, sel):
-    conn, address = sock.accept()
-    print(f"Accepted connection from {address}")
-    conn.setblocking(False)
-    data = {'address': address, 'request': b'', 'response': b''}
-    sel.register(conn, selectors.EVENT_READ | selectors.EVENT_WRITE, data=data)
+    try:
+        conn, address = sock.accept()
+        print(f"Accepted connection from {address}")
+        conn.setblocking(False)
+        data = {'address': address, 'request': b'', 'response': b''}
+        sel.register(conn, selectors.EVENT_READ | selectors.EVENT_WRITE, data=data)
+    except Exception as e:
+        print(f"Error accepting connection: {e}")
+        traceback.print_exc()
 
 def service_connection(key, mask, sel, db, protocol):
     sock = key.fileobj
     data = key.data
-    if mask & selectors.EVENT_READ:
-        handle_read(sock, data, sel, db, protocol)
-    if mask & selectors.EVENT_WRITE:
-        handle_write(sock, data, sel)
+    try:
+        if mask & selectors.EVENT_READ:
+            handle_read(sock, data, sel, db, protocol)
+        if mask & selectors.EVENT_WRITE:
+            handle_write(sock, data, sel)
+    except Exception as e:
+        print(f"Error servicing connection: {e}")
+        unregister_socket(sel, sock)
+        sock.close()
 
 def handle_read(sock, data, sel, db, protocol):
-    recv_data = sock.recv(4096)
-    if recv_data:
-        data['request'] += recv_data
-        protocol.process_requests(data, db)
-    else:
-        print(f"Closing connection to {data['address']}")
-        sel.unregister(sock)
+    try:
+        recv_data = sock.recv(4096)
+        if recv_data:
+            data['request'] += recv_data
+            protocol.process_requests(data, db)
+        else:
+            print(f"Closing connection to {data['address']}")
+            unregister_socket(sel, sock)
+            sock.close()
+    except Exception as e:
+        print(f"Error while reading data: {e}")
+        unregister_socket(sel, sock)
         sock.close()
 
 def handle_write(sock, data, sel):
@@ -86,9 +116,12 @@ def handle_write(sock, data, sel):
             data['response'] = data['response'][sent:]
         except ConnectionResetError:
             print(f"Connection reset by {data['address']}")
-            sel.unregister(sock)
+            unregister_socket(sel, sock)
             sock.close()
-
+        except Exception as e:
+            print(f"Error writing data: {e}")
+            unregister_socket(sel, sock)
+            sock.close()
 
 if __name__ == "__main__":
     main()
