@@ -40,7 +40,7 @@ class Protocol:
             else:
                 response = self.request_parser.invalid_request()
         except:
-            response = self.request_parser
+            response = self.request_parser.invalid_request()
         data['response'] += response
         data['request'] = data['request'][total_size:]
         
