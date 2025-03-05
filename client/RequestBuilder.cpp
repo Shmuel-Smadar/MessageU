@@ -3,7 +3,7 @@
 
 std::vector<uint8_t> RequestBuilder::buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey) {
     std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
-    Utils::appendString(buffer, "0000000000000000"); //add empty clientID since we don't have one yet
+    Utils::appendString(buffer, "0000000000000000"); // add empty clientID since we don't have one yet
     Utils::appendUint16(buffer, static_cast<uint16_t>(RequestType::Registration));
 
     std::vector<uint8_t> payload;

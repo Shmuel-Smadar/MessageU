@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include "Base64Wrapper.h"
 #include "Utils.h"
+#include "ProtocolConstants.h"
 
 class CurrentUser {
 private:

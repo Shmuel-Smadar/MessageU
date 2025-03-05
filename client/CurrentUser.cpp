@@ -14,7 +14,7 @@ std::string CurrentUser::getName() const {
 }
 
 bool CurrentUser::setName(const std::string& name) {
-    if (name.length() > 254)
+    if (name.length() > ProtocolByteSizes::ClientName + 1) // +1 for the '\0'
         return false;
     this->name = name;
     return true;

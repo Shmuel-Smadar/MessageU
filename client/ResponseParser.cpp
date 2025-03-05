@@ -77,8 +77,6 @@ void ResponseParser::parseMessage(Message& message, EncryptionManager& encryptio
 	}
 }
 
-
-//TODO: func name needs changing...
 void ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
 	size_t pos = ProtocolByteSizes::Header;
