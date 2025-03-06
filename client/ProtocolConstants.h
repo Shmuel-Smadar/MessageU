@@ -21,6 +21,11 @@ namespace Version {
 	constexpr uint8_t ClientVersion = 1;
 }
 namespace ServerCodes {
+	constexpr uint16_t RegistrationSuccessful = 2100;
+	constexpr uint16_t ReturnedClientList = 2101;
+	constexpr uint16_t ReturnedPublicKey = 2102;
+	constexpr uint16_t MessageSent = 2103;
+	constexpr uint16_t ReturnedAwaitingMessages = 2104;
 	constexpr uint16_t Error = 9000;
 }
 namespace MessageType {

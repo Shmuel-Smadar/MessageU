@@ -1,9 +1,14 @@
 #include "ResponseParser.h"
 
+void validateResponseCode(uint16_t received, uint16_t expected) {
+	if (received != expected) {
+		throw std::runtime_error("Response code not matching: expected " + std::to_string(expected) + ", got " + std::to_string(received));
+	}
+}
 
 void ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data, CurrentUser& currentUser) {
-
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::RegistrationSuccessful);
 	size_t pos = ProtocolByteSizes::Header;
 	std::string clientID(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId);
 	currentUser.setClientID(Utils::bytesToHex(clientID));
@@ -12,12 +17,12 @@ void ResponseParser::parseRegistrationResponse(const std::vector<uint8_t>& data,
 
 void ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::ReturnedClientList);
 	size_t pos = ProtocolByteSizes::Header;
 	size_t userDataLength = ProtocolByteSizes::ClientId + ProtocolByteSizes::ClientName;
 	while (pos + userDataLength <= data.size()) {
 		std::string clientId(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId);
 		pos += ProtocolByteSizes::ClientId;
-
 		std::string clientName(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientName);
 		pos += ProtocolByteSizes::ClientName;
 		userInfoList.addUser(Utils::bytesToHex(clientId), Utils::trimAfterNull(clientName));
@@ -26,6 +31,7 @@ void ResponseParser::parseClientsListResponse(const std::vector<uint8_t>& data, 
 
 void ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, UserInfo& userInfo, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::ReturnedPublicKey);
 	size_t pos = ProtocolByteSizes::Header;
 	std::string publicKey = std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::PublicKey);
 	encryptionManager.storePublicKey(userInfo.getClientID(), publicKey);
@@ -34,6 +40,7 @@ void ResponseParser::parsePublicKeyResponse(const std::vector<uint8_t>& data, Us
 
 std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::vector<uint8_t>& data, UserInfoList& userInfoList, EncryptionManager& encryptionManager) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::ReturnedAwaitingMessages);
 	size_t pos = ProtocolByteSizes::Header;
 	std::vector<Message> messages;
 	while (pos + ProtocolByteSizes::MessageHeaderResponse <= data.size()) {
@@ -79,13 +86,16 @@ void ResponseParser::parseMessage(Message& message, EncryptionManager& encryptio
 
 void ResponseParser::parseSymmetricKeyRequestResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::MessageSent);
 	size_t pos = ProtocolByteSizes::Header;
 	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId));
 	pos += ProtocolByteSizes::ClientId;
 	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId));
 }
+
 void ResponseParser::parseTextMessageResponse(const std::vector<uint8_t>& data, const UserInfo& userInfo) {
 	std::unique_ptr<ResponseHeader> header = parseResponseHeaders(data);
+	validateResponseCode(header->code, ServerCodes::MessageSent);
 	size_t pos = ProtocolByteSizes::Header;
 	std::string requestedUserClientId = Utils::bytesToHex(std::string(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::ClientId));
 	uint32_t messageID = Utils::parseUint32(std::vector<uint8_t>(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageId));
@@ -111,4 +121,3 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 	}
 	return std::make_unique<ResponseHeader>(version, code, payloadSize);
 }
-
