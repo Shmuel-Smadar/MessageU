@@ -39,8 +39,14 @@ void NetworkManager::connect() {
 }
 
 void NetworkManager::disconnect() {
-    socket.close();
+    try {
+        socket.close();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error while closing socket: " << e.what() << std::endl;
+    }
 }
+
 
 bool NetworkManager::readServerInfo(const std::string& filename) {
     std::ifstream infile(filename);
@@ -58,7 +64,18 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
     }
     return false;
 }
-
+void NetworkManager::sendAndReceive(const std::vector<uint8_t>& request, std::vector<uint8_t>& response) {
+    connect();
+    try {
+        sendData(request);
+        receiveData(response);
+        disconnect();
+    }
+    catch (const std::exception& e) {
+        disconnect();
+        throw;
+    }
+}
 void NetworkManager::sendData(const std::vector<uint8_t>& data) {
     boost::asio::write(socket, boost::asio::buffer(data));
 }
