@@ -100,6 +100,9 @@ class Database:
         with self.conn:
             self.conn.execute('DELETE FROM messages WHERE ID = ?', (message_id,))
 
+    def delete_messages_for_client(self, client_id: str):
+        with self.conn:
+            self.conn.execute('DELETE FROM messages WHERE ToClient = ?', (client_id,))
 
     def close(self):
         self.conn.close()
