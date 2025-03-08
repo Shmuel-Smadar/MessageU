@@ -58,3 +58,8 @@ bool UserInfo::isSymmetricKeyRequestedByOtherUser() const {
 bool UserInfo::isSymmetricKeyRequestedByCurrentUser() const {
 	return (this->symmetricKeyStatus == SymmetricKeyStatus::RequestedByCurrentUser);
 }
+
+std::string UserInfo::toString() const {
+	std::string userString = "Name: " + this->getName() + " ID: " + this->getClientID();
+	return userString;
+}

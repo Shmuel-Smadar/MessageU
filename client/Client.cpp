@@ -126,8 +126,7 @@ void Client::requestClientsList() {
 		std::vector<uint8_t> response;
 		networkManager.sendAndReceive(request, response);
 		responseParser.parseClientsListResponse(response, userInfoList);
-		userInterface.printText("Registered clients:");
-		userInfoList.printUsers();
+		userInfoList.printUsers(userInterface);
 	}
 	catch (std::exception& e) {
 		handleException(e);

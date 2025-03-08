@@ -14,6 +14,7 @@
 #include "UserInfo.h"
 #include "ClientException.h"
 #include "ErrorCodes.h"
+#include "UserInterface.h"
 
 class UserInfoList {
 private:
@@ -25,5 +26,5 @@ public:
     UserInfo& getUserByID(const std::string& UserID);
     UserInfo& getUserByName(const std::string& name);
     void addUser(const std::string& UserID, const std::string& name);
-    void printUsers();
+    void printUsers(UserInterface& userInterface);
 };

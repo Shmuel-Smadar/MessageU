@@ -27,7 +27,7 @@ public:
 
 	std::string getClientID() const;
 	void setClientID(const std::string& ClientID);
-
+	std::string toString() const;
 	bool isPublicKeyReceived() const;
 	bool isSymmetricKeyReceived() const;
 	bool isSymmetricKeyRequestedByOtherUser() const;

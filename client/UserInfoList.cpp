@@ -33,8 +33,9 @@ void UserInfoList::addUser(const std::string& clientID, const std::string& name)
     userInfoList.push_back(newUser);
 }
 
-void UserInfoList::printUsers() {
-    for (const auto& user : userInfoList) {
-        std::cout << "Name: " << user.getName() << " ID: " << user.getClientID() << std::endl;
+void UserInfoList::printUsers(UserInterface& userInterface) {
+    userInterface.printText("Registered clients:");
+    for (const UserInfo& user : userInfoList) {
+        userInterface.printText(user.toString());
     }
 }
