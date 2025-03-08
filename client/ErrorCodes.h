@@ -1,9 +1,3 @@
-/*
-* File Name: ErrorCodes.h
-* This file contains the errors that will be displayed to the user.
-*/
-
-
 #pragma once
 #include <string>
 #include <array>
@@ -27,6 +21,8 @@ enum class ClientErrorCode : int {
     RESPONSE_CODE_MISMATCH,
     RESPONSE_HEADER_INVALID,
     SERVER_RETURNED_ERROR,
+    INVALID_HEX_STRING,
+    INVALID_INTEGER,
     NUM_ERROR_CODES
 };
 
@@ -49,9 +45,10 @@ namespace ErrorMessages {
         "Currently only windows is supported.",
         "Response code mismatch.",
         "Server response does not meet header sizes defined in the protocol.",
-        "Server responded with an error."
+        "Server responded with an error.",
+        "Invalid hex string.",
+        "Invalid integer."
     };
-
     inline std::string getErrorString(ClientErrorCode code) {
         size_t index = static_cast<size_t>(code);
         if (index < ERROR_STRINGS.size()) {

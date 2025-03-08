@@ -47,8 +47,8 @@ namespace Utils {
 
     std::string Utils::hexToBytes(const std::string& hex) {
         std::string bytes;
-        if (hex.length() % 2 != 0) 
-            throw std::invalid_argument("Hex string must have an even length.");
+        if (hex.length() % 2 != 0)
+            throw ClientException(ClientErrorCode::INVALID_HEX_STRING);
         for (size_t i = 0; i < hex.length(); i += 2) {
             std::string byteString = hex.substr(i, 2);
             char byte = static_cast<char>(strtol(byteString.c_str(), nullptr, 16));
@@ -56,13 +56,11 @@ namespace Utils {
         }
         return bytes;
     }
-
-    /* a function that cast a string into an int, supporting negative or positive leading sign. */
+    // a function that cast a string into an int, supporting negative or positive leading sign.
     int Utils::stringToInt(const std::string& str)
     {
         if (str.empty())
-            throw std::invalid_argument("empty argument");
-
+            throw ClientException(ClientErrorCode::INVALID_INTEGER);
         bool negate = false;
         size_t start = 0;
 
@@ -75,17 +73,13 @@ namespace Utils {
         {
             start = 1;
         }
-
         if (start == str.size())
-            throw std::invalid_argument("Sign character only.");
-
+            throw ClientException(ClientErrorCode::INVALID_INTEGER);
         int result = 0;
-
         for (int i = start; i < str.size(); ++i)
         {
             if (str[i] < '0' || str[i] > '9')
-                throw std::invalid_argument("Invalid Integer");
-
+                throw ClientException(ClientErrorCode::INVALID_INTEGER);
             result = result * 10 - (str[i] - '0');
         }
         return negate ? result : -result;
@@ -98,7 +92,6 @@ std::string Utils::trimAfterNull(const std::string& str) {
         return str.substr(0, pos);
     return str;
 }
-
 uint8_t hexCharToByte(char c) {
     if (std::isdigit(static_cast<unsigned char>(c))) {
         return c - '0';
@@ -107,16 +100,13 @@ uint8_t hexCharToByte(char c) {
         return static_cast<uint8_t>(std::toupper(c)) - 'A' + 10;
     }
     else {
-        throw std::invalid_argument("Invalid hex character encountered.");
+        throw ClientException(ClientErrorCode::INVALID_HEX_STRING);
     }
 }
-
-
 std::vector<uint8_t> Utils::hexStringToBytes(const std::string& hex) {
     if (hex.length() % 2 != 0) {
-        throw std::invalid_argument("Hex string must have an even length.");
+        throw ClientException(ClientErrorCode::INVALID_HEX_STRING);
     }
-
     std::vector<uint8_t> bytes;
     bytes.reserve(hex.length() / 2);
     for (size_t i = 0; i < hex.length(); i += 2) {
@@ -126,7 +116,6 @@ std::vector<uint8_t> Utils::hexStringToBytes(const std::string& hex) {
     }
     return bytes;
 }
-
 void Utils::appendToBuffer(std::vector<uint8_t>& buffer, const std::vector<uint8_t>& source) {
     buffer.insert(buffer.end(), source.begin(), source.end());
 }

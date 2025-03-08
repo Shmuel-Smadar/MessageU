@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include "Message.h"
+#include "ClientException.h"
 
 namespace Utils {
     std::string bytesToHex(const std::string& bytes);

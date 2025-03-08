@@ -177,7 +177,7 @@ void Client::sendSymmetricKeyRequest() {
 void Client::sendTextMessage() {
 	try {
 		std::string targetName = userInterface.getInput("Enter username to send a message to: ");
-		std::string textMessage = userInterface.getInput("Enter the message you'de like to send to this user: ");
+		std::string textMessage = userInterface.getInput("Enter the message you would like to send to this user: ");
 		UserInfo requestedUser = userInfoList.getUserByName(targetName);
 		std::vector<uint8_t> request = requestBuilder.buildTextMessageRequest(currentUser, requestedUser, textMessage, *encryptionManager);
 		std::vector<uint8_t> response;
