@@ -17,6 +17,7 @@
 #include "RequestBuilder.h"
 #include "ResponseParser.h"
 #include "Base64Wrapper.h"
+#include "ClientException.h"
 
 class Client {
 public:
@@ -35,7 +36,7 @@ private:
     void sendTextMessage();
     void sendOwnSymmetricKey();
     void exitClient(); 
-
+    void handleException(const std::exception& e);
     
    
     RequestBuilder requestBuilder;

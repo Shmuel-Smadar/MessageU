@@ -17,6 +17,7 @@
 #include "Base64Wrapper.h"
 #include "Utils.h"
 #include "ProtocolConstants.h"
+#include "ClientException.h"
 
 class CurrentUser {
 private:
@@ -32,7 +33,7 @@ public:
     void setRegistered(bool status);
 
     std::string getName() const;
-    bool setName(const std::string& name);
+    void setName(const std::string& name);
 
     std::string getClientID() const;
     void setClientID(const std::string& clientID);

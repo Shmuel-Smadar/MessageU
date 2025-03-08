@@ -10,6 +10,9 @@
 #include <fstream>
 #include <memory>
 #include <string>
+#include "ClientException.h"
+#include "ErrorCodes.h"
+#include <stdexcept>
 
 class FileManager {
 

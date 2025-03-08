@@ -17,6 +17,7 @@
 #include "ProtocolConstants.h"
 #include "FileManager.h"
 #include "Utils.h"
+#include "ClientException.h"
 
 class NetworkManager {
 public:

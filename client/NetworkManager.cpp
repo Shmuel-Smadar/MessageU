@@ -6,7 +6,7 @@ NetworkManager::NetworkManager(FileManager fileManager)
     try {
         auto infile = fileManager.openFileIfExists("server.info");
         if (!infile)
-            throw std::runtime_error("File server.info doesn't exist.");
+            throw ClientException(ClientErrorCode::MISSING_SERVER_INFO_FILE);
 
         std::string line;
         if (std::getline(*infile, line)) {
@@ -16,11 +16,11 @@ NetworkManager::NetworkManager(FileManager fileManager)
                 port = static_cast<uint16_t>(std::stoi(line.substr(pos + 1)));
             }
             else {
-                throw std::runtime_error("Invalid format of server.info file.");
+                throw ClientException(ClientErrorCode::INVALID_SERVER_INFO_FORMAT);
             }
         }
         else {
-            throw std::runtime_error("Empty server.info file.");
+            throw ClientException(ClientErrorCode::EMPTY_SERVER_INFO);
         }
     }
     catch (const std::exception& e) {
@@ -32,10 +32,15 @@ NetworkManager::NetworkManager(FileManager fileManager)
 }
 
 void NetworkManager::connect() {
-    boost::asio::ip::tcp::endpoint endpoint(
-        boost::asio::ip::make_address(IP), static_cast<unsigned short>(port)
-    );
-    socket.connect(endpoint);
+    try {
+        boost::asio::ip::tcp::endpoint endpoint(
+            boost::asio::ip::make_address(IP), static_cast<unsigned short>(port)
+        );
+        socket.connect(endpoint);
+    }
+    catch (const std::exception& e) {
+        throw ClientException(ClientErrorCode::CONNECTION_ERROR);
+    }
 }
 
 void NetworkManager::disconnect() {
@@ -46,7 +51,6 @@ void NetworkManager::disconnect() {
         std::cerr << "Error while closing socket: " << e.what() << std::endl;
     }
 }
-
 
 bool NetworkManager::readServerInfo(const std::string& filename) {
     std::ifstream infile(filename);
@@ -73,9 +77,10 @@ void NetworkManager::sendAndReceive(const std::vector<uint8_t>& request, std::ve
     }
     catch (const std::exception& e) {
         disconnect();
-        throw;
+        throw ClientException(ClientErrorCode::SEND_RECEIVE_ERROR);
     }
 }
+
 void NetworkManager::sendData(const std::vector<uint8_t>& data) {
     boost::asio::write(socket, boost::asio::buffer(data));
 }
@@ -85,19 +90,18 @@ void NetworkManager::receiveData(std::vector<uint8_t>& data) {
     uint8_t header[ProtocolByteSizes::Header];
     size_t bytesRead = boost::asio::read(socket, boost::asio::buffer(header, ProtocolByteSizes::Header));
     if (bytesRead != ProtocolByteSizes::Header)
-        throw std::runtime_error("Message received from the server does not have proper headers.");
-    // extract the payload size 
+        throw ClientException(ClientErrorCode::INVALID_SERVER_RESPONSE);
+    // extract the payload size
     std::vector<uint8_t> sizeBytes(header + ProtocolByteSizes::Version + ProtocolByteSizes::Code,
         header + ProtocolByteSizes::Header);
     uint32_t payloadSize = Utils::parseUint32(sizeBytes);
     data.insert(data.end(), header, header + ProtocolByteSizes::Header);
 
-    // read payload according to the payload size
     if (payloadSize > 0) {
         std::vector<uint8_t> payload(payloadSize);
         bytesRead = boost::asio::read(socket, boost::asio::buffer(payload));
         if (bytesRead != payloadSize)
-            throw std::runtime_error("Message received from the server has a shorter payload than specified.");
+            throw ClientException(ClientErrorCode::INVALID_SERVER_RESPONSE);
         data.insert(data.end(), payload.begin(), payload.end());
     }
 }

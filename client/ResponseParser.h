@@ -13,12 +13,15 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <stdexcept>
 #include "CurrentUser.h"
 #include "Utils.h"
 #include "UserInfo.h"
 #include "UserInfoList.h"
 #include "EncryptionManager.h"
 #include "ProtocolConstants.h"
+#include "ClientException.h"
+#include "ErrorCodes.h"
 
 class ResponseParser {
 private:

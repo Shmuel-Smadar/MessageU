@@ -31,11 +31,10 @@ void Client::checkRegistration() {
 		currentUser = CurrentUser(name, clientID);
 		encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
 	}
-	catch (std::exception& e) {
-		std::cerr << "incomplete data in my.info file, either fix or delete it to register again." << std::endl;
+	catch (std::exception&) {
+		userInterface.printError("incomplete data in my.info file, either fix or delete it to register again.");
 	}
 }
-
 
 void Client::run() {
 	while (true) {
@@ -45,13 +44,23 @@ void Client::run() {
 	}
 }
 
+void Client::handleException(const std::exception& e)
+{
+	const ClientException* clientEx = dynamic_cast<const ClientException*>(&e);
+	if (clientEx) {
+		userInterface.printError(e.what());
+	}
+	else {
+		userInterface.printError("An error occurred. Please try again.");
+	}
+}
+
 void Client::handleUserSelection(int selection) {
 
 	if (selection == 1) {
 		registerClient();
 		return;
 	}
-	// if the user did not chose to register yet, inform them that it is required for any other action.
 	else if (!currentUser.isRegistered()) {
 		userInterface.printText("Please register first.");
 		return;
@@ -79,7 +88,7 @@ void Client::handleUserSelection(int selection) {
 		exitClient();
 		break;
 	default:
-		userInterface.printText("Invalid selection. Please try again.");
+		userInterface.printError("Invalid selection. Please try again.");
 	}
 }
 
@@ -90,17 +99,14 @@ void Client::registerClient() {
 			userInterface.printText("Already registered.");
 			return;
 		}
-		if (!currentUser.setName(userInterface.getInput("Enter username: "))) {
-			userInterface.printText("Name must not surpass 254 letters.");
-			return;
-		}
+		currentUser.setName(userInterface.getInput("Enter username: "));
 		std::vector<uint8_t> request = requestBuilder.buildRegistrationRequest(currentUser, encryptionManager->getPublicKey());
 		std::vector<uint8_t> response;
 		networkManager.sendAndReceive(request, response);
 		responseParser.parseRegistrationResponse(response, currentUser);
 		auto outfile = fileManager.createFile("my.info");
 		if (!outfile) {
-			std::cerr << "Error: Cannot create my.info file." << std::endl;
+			userInterface.printError("Error: Cannot create my.info file.");
 			return;
 		}
 		// write current user info into my.info file for future runs of the program.
@@ -110,7 +116,7 @@ void Client::registerClient() {
 		outfile->close();
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -124,7 +130,7 @@ void Client::requestClientsList() {
 		userInfoList.printUsers();
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -138,7 +144,7 @@ void Client::requestPublicKey() {
 		responseParser.parsePublicKeyResponse(response, requestedUser, *encryptionManager);
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -151,7 +157,7 @@ void Client::requestWaitingMessages() {
 		userInterface.printMessages(messages);
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -165,7 +171,7 @@ void Client::sendSymmetricKeyRequest() {
 		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -180,7 +186,7 @@ void Client::sendTextMessage() {
 		responseParser.parseTextMessageResponse(response, requestedUser);
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 
@@ -194,7 +200,7 @@ void Client::sendOwnSymmetricKey() {
 		responseParser.parseSymmetricKeyRequestResponse(response, requestedUser);
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		handleException(e);
 	}
 }
 

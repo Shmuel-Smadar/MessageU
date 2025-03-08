@@ -2,7 +2,7 @@
  * File Name: UserInterface.h
  *
  * This file is responsible for handling user interactions, like displaying the menu,
- * receiving user input, and printing messages.
+ * receiving user input, printing messages and errors.
  */
 
 
@@ -19,5 +19,6 @@ public:
     int getUserSelection() const;
     std::string getInput(const std::string& prompt) const;
     void printText(const std::string& message) const;
+    void printError(const std::string& message) const;
     void printMessages(std::vector<Message> messages) const;
 };

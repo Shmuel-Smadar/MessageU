@@ -1,5 +1,4 @@
 #include "FileManager.h"
-#include <stdexcept>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -16,17 +15,15 @@ void FileManager::determineExecutableDir() {
     char path[MAX_PATH];
     DWORD length = GetModuleFileNameA(NULL, path, MAX_PATH);
     if (length == 0 || length == MAX_PATH) {
-        throw std::runtime_error("Unable to retrieve executable path.");
+        throw ClientException(ClientErrorCode::FILE_PATH_ERROR);
     }
-
     // Remove the executable name to get the directory
     if (!PathRemoveFileSpecA(path)) {
-        throw std::runtime_error("Unable to parse executable directory.");
+        throw ClientException(ClientErrorCode::DIR_PARSE_ERROR);
     }
-
     executableDir = std::filesystem::path(path);
 #else
-    throw std::runtime_error("Currently only windows is supported.");
+    throw ClientException(ClientErrorCode::OS_NOT_SUPPORTED);
 #endif
 }
 

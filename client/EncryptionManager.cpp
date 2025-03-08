@@ -30,7 +30,7 @@ std::string EncryptionManager::encryptWithPublicKey(const std::string& clientID,
     if (it != publicKeys.end()) {
         return it->second->encrypt(message);
     }
-    throw std::runtime_error("Public key of the requested user was not found.");
+    throw ClientException(ClientErrorCode::PUBLIC_KEY_NOT_FOUND);
 }
 
 std::string EncryptionManager::decryptWithPrivateKey(const std::string& ciphertext)
@@ -51,7 +51,7 @@ std::string EncryptionManager::getSymmetricKey(const std::string& clientID) cons
         const unsigned char* key = it->second->getKey();
         return std::string(reinterpret_cast<const char*>(key), AESWrapper::DEFAULT_KEYLENGTH);
     }
-    throw std::runtime_error("Symmetric key of the requested user was not found.");
+    throw ClientException(ClientErrorCode::SYMMETRIC_KEY_NOT_FOUND);
 }
 
 void EncryptionManager::storeSymmetricKey(const std::string& clientID, const std::string& key) {
@@ -63,7 +63,7 @@ std::string EncryptionManager::encryptWithSymmetricKey(const std::string& client
     if (it != symmetricKeys.end()) {
         return it->second->encrypt(message.c_str(), message.size());
     }
-    throw std::runtime_error("Symmetric key of the requested user was not found.");
+    throw ClientException(ClientErrorCode::SYMMETRIC_KEY_NOT_FOUND);
 }
 
 std::string EncryptionManager::decryptWithSymmetricKey(const std::string& clientID, const std::string& ciphertext) {

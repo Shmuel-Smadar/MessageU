@@ -10,6 +10,8 @@
 
 #include "RSAWrapper.h"
 #include "AESWrapper.h"
+#include "ClientException.h"
+#include "ErrorCodes.h"
 #include <string>
 #include <unordered_map>
 #include <stdexcept>

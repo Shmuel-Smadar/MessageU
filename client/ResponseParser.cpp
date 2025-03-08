@@ -2,7 +2,7 @@
 
 void validateResponseCode(uint16_t received, uint16_t expected) {
 	if (received != expected) {
-		throw std::runtime_error("Response code not matching: expected " + std::to_string(expected) + ", got " + std::to_string(received));
+		throw ClientException(ClientErrorCode::RESPONSE_CODE_MISMATCH);
 	}
 }
 
@@ -103,7 +103,7 @@ void ResponseParser::parseTextMessageResponse(const std::vector<uint8_t>& data, 
 
 std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::vector<uint8_t>& data) {
 	if (data.size() < ProtocolByteSizes::Header) {
-		throw std::runtime_error("Server response does not meet header sizes defined in the protocol.");
+		throw ClientException(ClientErrorCode::RESPONSE_HEADER_INVALID);
 	}
 
 	uint8_t version = data[0];
@@ -117,7 +117,7 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 	);
 
 	if (code == ServerCodes::Error) {
-		throw std::runtime_error("Server responded with an error.");
+		throw ClientException(ClientErrorCode::SERVER_RETURNED_ERROR);
 	}
 	return std::make_unique<ResponseHeader>(version, code, payloadSize);
 }

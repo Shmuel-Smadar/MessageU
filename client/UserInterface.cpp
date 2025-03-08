@@ -38,6 +38,10 @@ void UserInterface::printText(const std::string& message) const {
     std::cout << message << std::endl;
 }
 
+void UserInterface::printError(const std::string & message) const {
+    std::cerr << message << std::endl;
+}
+
 void UserInterface::printMessages(std::vector<Message> messages) const {
     for (Message message : messages) {
         message.printMessage();
