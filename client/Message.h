@@ -30,7 +30,5 @@ public:
     std::string getContent() const;
     UserInfo getUser() const;
     void setContent(const std::string& content);
-    void printMessage() const;
-    
-
+    std::string toString() const;
 };

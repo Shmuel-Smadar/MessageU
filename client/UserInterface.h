@@ -12,6 +12,7 @@
 #include <iostream>
 #include "Utils.h"
 #include "Message.h"
+#include "ProtocolConstants.h"
 
 class UserInterface {
 public:

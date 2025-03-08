@@ -27,20 +27,21 @@ void Message::setContent(const std::string& content) {
 	this->content = content;
 }
 
-void Message::printMessage() const {
-	std::cout << "From: <" << this->getSenderUserName() << ">" << std::endl;
-	std::cout << "Content:" << std::endl;
+std::string Message::toString() const {
+	std::string messageString;
+	messageString += "From: <" + this->getSenderUserName() + ">\n";
+	messageString += "Content:\n";
 	if (this->getMessageType() == MessageType::SymmetricKeyRequest) {
-		std::cout << "Request for symmetric key" << std::endl;
+		messageString += "Request for symmetric key";
 	}
 	else if (this->getMessageType() == MessageType::SymmetricKeySent) {
-		std::cout << "Symmetric key received" << std::endl;
+		messageString += "Symmetric key received";
 	}
 	else if (this->getMessageType() == MessageType::TextMessageSent) {
-		std::cout << this->getContent() << std::endl;
+		messageString += this->getContent();
 	}
-	std::cout << "-----<EOM>-----" << std::endl;
-
+	messageString += "\n-----<EOM>-----";
+	return messageString;
 }
 
 

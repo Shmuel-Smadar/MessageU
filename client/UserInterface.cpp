@@ -44,6 +44,6 @@ void UserInterface::printError(const std::string & message) const {
 
 void UserInterface::printMessages(std::vector<Message> messages) const {
     for (Message message : messages) {
-        message.printMessage();
+        printText(message.toString());
     }
 }
