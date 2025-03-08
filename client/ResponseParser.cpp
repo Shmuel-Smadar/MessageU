@@ -58,6 +58,10 @@ std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::ve
 		std::vector<uint8_t> messageLengthBytes(data.begin() + pos, data.begin() + pos + ProtocolByteSizes::MessageLength);
 		uint32_t messageLength = Utils::parseUint32(messageLengthBytes);
 		pos += ProtocolByteSizes::MessageLength;
+		//ensure that there is enough data remaining for the message content.
+		if (pos + messageLength > data.size()) {
+			throw ClientException(ClientErrorCode::INVALID_SERVER_RESPONSE);
+		}
 		//read message content based on the length
 		std::string content(reinterpret_cast<const char*>(&data[pos]), messageLength);
 		pos += messageLength;
