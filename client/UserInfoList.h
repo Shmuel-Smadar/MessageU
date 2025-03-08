@@ -12,7 +12,8 @@
 #include <iostream>
 #include <stdexcept>
 #include "UserInfo.h"
-
+#include "ClientException.h"
+#include "ErrorCodes.h"
 
 class UserInfoList {
 private:

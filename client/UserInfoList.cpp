@@ -10,7 +10,7 @@ UserInfo& UserInfoList::getUserByID(const std::string& clientID) {
             return user;
         }
     }
-    throw std::runtime_error("User with clientID: " + clientID + " was not found");
+    throw ClientException(ClientErrorCode::USER_NOT_FOUND);
 }
 
 UserInfo& UserInfoList::getUserByName(const std::string& name) {
@@ -19,12 +19,12 @@ UserInfo& UserInfoList::getUserByName(const std::string& name) {
             return user;
         }
     }
-    throw std::runtime_error("User with name: " + name + " was not found");
+    throw ClientException(ClientErrorCode::USER_NOT_FOUND);
 }
 
 void UserInfoList::addUser(const std::string& clientID, const std::string& name) {
-    for (const auto& User : userInfoList) {
-        if (User.getClientID() == clientID) {
+    for (const auto& user : userInfoList) {
+        if (user.getClientID() == clientID) {
             return;
         }
     }
@@ -37,5 +37,4 @@ void UserInfoList::printUsers() {
     for (const auto& user : userInfoList) {
         std::cout << "Name: " << user.getName() << " ID: " << user.getClientID() << std::endl;
     }
-
 }
