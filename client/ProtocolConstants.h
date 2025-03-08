@@ -10,7 +10,18 @@
 #pragma once
 #include <cstdint>
 
-namespace RequestType {
+namespace MenuOptions {
+	constexpr uint8_t Register = 110;
+	constexpr uint8_t RequestClientsList = 120;
+	constexpr uint8_t RequestPublicKey = 130;
+	constexpr uint8_t RequestWaitingMessages = 140;
+	constexpr uint8_t SendTextMessage = 150;
+	constexpr uint8_t RequestSymmetricKey = 151;
+	constexpr uint8_t SendSymmetricKey = 152;
+	constexpr uint8_t Exit = 0;
+}
+
+namespace ClientCodes {
 	constexpr uint16_t Registration = 600;
 	constexpr uint16_t ClientList = 601;
 	constexpr uint16_t PublicKey = 602;

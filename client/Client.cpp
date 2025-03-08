@@ -56,8 +56,7 @@ void Client::handleException(const std::exception& e)
 }
 
 void Client::handleUserSelection(int selection) {
-
-	if (selection == 1) {
+	if (selection == MenuOptions::Register) {
 		registerClient();
 		return;
 	}
@@ -65,26 +64,27 @@ void Client::handleUserSelection(int selection) {
 		userInterface.printText(ErrorMessages::getErrorString(ClientErrorCode::PLEASE_REGISTER_FIRST));
 		return;
 	}
+
 	switch (selection) {
-	case 2:
+	case MenuOptions::RequestClientsList:
 		requestClientsList();
 		break;
-	case 3:
+	case MenuOptions::RequestPublicKey:
 		requestPublicKey();
 		break;
-	case 4:
+	case MenuOptions::RequestWaitingMessages:
 		requestWaitingMessages();
 		break;
-	case 5:
+	case MenuOptions::SendTextMessage:
 		sendTextMessage();
 		break;
-	case 6:
+	case MenuOptions::RequestSymmetricKey:
 		sendSymmetricKeyRequest();
 		break;
-	case 7:
+	case MenuOptions::SendSymmetricKey:
 		sendOwnSymmetricKey();
 		break;
-	case 0:
+	case MenuOptions::Exit:
 		exitClient();
 		break;
 	default:

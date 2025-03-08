@@ -3,14 +3,14 @@
 
 void UserInterface::displayMenu() const {
     std::cout << "\nMessageU client at your service.\n\n"
-        << "1) Register\n"
-        << "2) Request for clients list\n"
-        << "3) Request for public key\n"
-        << "4) Request for waiting messages\n"
-        << "5) Send a text message\n"
-        << "6) Send a request for symmetric key\n"
-        << "7) Send your symmetric key\n"
-        << "0) Exit client\n\n"
+        << int(MenuOptions::Register) << ") Register\n"
+        << int(MenuOptions::RequestClientsList) << ") Request for clients list\n"
+        << int(MenuOptions::RequestPublicKey) << ") Request for public key\n"
+        << int(MenuOptions::RequestWaitingMessages) << ") Request for waiting messages\n"
+        << int(MenuOptions::SendTextMessage) << ") Send a text message\n"
+        << int(MenuOptions::RequestSymmetricKey) << ") Send a request for symmetric key\n"
+        << int(MenuOptions::SendSymmetricKey) << ") Send your symmetric key\n"
+        << int(MenuOptions::Exit) << ") Exit client\n\n"
         << "? ";
 }
 
