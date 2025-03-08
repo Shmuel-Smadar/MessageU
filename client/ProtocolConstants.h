@@ -47,6 +47,7 @@ namespace ProtocolByteSizes {
 	constexpr size_t MessageHeaderRequest = 21; //ClientId + MessageType + MessageLength = 16 + 1 + 4 = 21
 	constexpr size_t MessageId = 4;
 	constexpr size_t MessageHeaderResponse = 25; //ClientId + MessageType + MessageLength + MessageId = 16 + 1 + 4 + 4 = 25
+	constexpr size_t MessageMaxSize = 32;
 }
 
 struct ResponseHeader {

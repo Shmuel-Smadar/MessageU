@@ -28,6 +28,7 @@ enum class ClientErrorCode : int {
     ALREADY_REGISTERED,
     PLEASE_REGISTER_FIRST,
     INVALID_SELECTION,
+    MESSAGE_TOO_LONG,
     NUM_ERROR_CODES
 };
 
@@ -57,7 +58,8 @@ namespace ErrorMessages {
         "Error: Cannot create my.info file.",
         "Already registered.",
         "Please register first.",
-        "Invalid selection. Please try again."
+        "Invalid selection. Please try again.",
+        "Message content size must not exceeds 32 bytes."
     };
     inline std::string getErrorString(ClientErrorCode code) {
         size_t index = static_cast<size_t>(code);

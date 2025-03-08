@@ -13,13 +13,13 @@
 #include <iostream>
 #include "ProtocolConstants.h"
 #include "UserInfo.h"
+#include "ClientException.h"
 
 class Message {
 private:
     const UserInfo& userInfo;
     uint8_t messageType;
     std::string content;
-    //TODO: add checks that the content size isnt bigger than 32 bytes.
 
 public:
     Message(UserInfo& userInfo, const uint8_t& messageType,const std::string& content);
