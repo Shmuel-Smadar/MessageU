@@ -10,15 +10,14 @@ IP = '127.0.0.1'
 PORT_FILE = 'myport.info'
 
 def get_port():
-    if os.path.exists(PORT_FILE):
+    try:
         with open(PORT_FILE, 'r') as f:
-            try:
-                port = int(f.read().strip())
-                return port
-            except ValueError:
-                print(f"Invalid port number in {PORT_FILE}. Using default port {DEFAULT_PORT}.")
-    else:
-        print(f"Port file {PORT_FILE} not found. Using default port {DEFAULT_PORT}.")
+            port = int(f.read().strip())
+            return port
+    except FileNotFoundError:
+        print(f"Port file '{PORT_FILE}' not found. Using default port {DEFAULT_PORT}.")
+    except ValueError:
+        print(f"Invalid port number in '{PORT_FILE}'. Using default port {DEFAULT_PORT}.")
     return DEFAULT_PORT
 
 def unregister_socket(sel, sock):
