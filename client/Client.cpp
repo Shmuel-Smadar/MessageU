@@ -32,7 +32,7 @@ void Client::checkRegistration() {
 		encryptionManager = std::make_unique<EncryptionManager>(Base64Wrapper::decode(privateKey));
 	}
 	catch (std::exception&) {
-		userInterface.printError("incomplete data in my.info file, either fix or delete it to register again.");
+		userInterface.printError(ErrorMessages::getErrorString(ClientErrorCode::INCOMPLETE_MY_INFO));
 	}
 }
 
@@ -51,7 +51,7 @@ void Client::handleException(const std::exception& e)
 		userInterface.printError(e.what());
 	}
 	else {
-		userInterface.printError("An error occurred. Please try again.");
+		userInterface.printError(ErrorMessages::getErrorString(ClientErrorCode::GENERAL_ERROR));
 	}
 }
 
@@ -62,7 +62,7 @@ void Client::handleUserSelection(int selection) {
 		return;
 	}
 	else if (!currentUser.isRegistered()) {
-		userInterface.printText("Please register first.");
+		userInterface.printText(ErrorMessages::getErrorString(ClientErrorCode::PLEASE_REGISTER_FIRST));
 		return;
 	}
 	switch (selection) {
@@ -88,7 +88,7 @@ void Client::handleUserSelection(int selection) {
 		exitClient();
 		break;
 	default:
-		userInterface.printError("Invalid selection. Please try again.");
+		userInterface.printError(ErrorMessages::getErrorString(ClientErrorCode::INVALID_SELECTION));
 	}
 }
 
@@ -96,7 +96,7 @@ void Client::handleUserSelection(int selection) {
 void Client::registerClient() {
 	try {
 		if (currentUser.isRegistered()) {
-			userInterface.printText("Already registered.");
+			userInterface.printText(ErrorMessages::getErrorString(ClientErrorCode::ALREADY_REGISTERED));
 			return;
 		}
 		currentUser.setName(userInterface.getInput("Enter username: "));
@@ -106,7 +106,7 @@ void Client::registerClient() {
 		responseParser.parseRegistrationResponse(response, currentUser);
 		auto outfile = fileManager.createFile("my.info");
 		if (!outfile) {
-			userInterface.printError("Error: Cannot create my.info file.");
+			userInterface.printError(ErrorMessages::getErrorString(ClientErrorCode::CANNOT_CREATE_MY_INFO));
 			return;
 		}
 		// write current user info into my.info file for future runs of the program.

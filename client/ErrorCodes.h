@@ -23,6 +23,11 @@ enum class ClientErrorCode : int {
     SERVER_RETURNED_ERROR,
     INVALID_HEX_STRING,
     INVALID_INTEGER,
+    INCOMPLETE_MY_INFO,
+    CANNOT_CREATE_MY_INFO,
+    ALREADY_REGISTERED,
+    PLEASE_REGISTER_FIRST,
+    INVALID_SELECTION,
     NUM_ERROR_CODES
 };
 
@@ -47,7 +52,12 @@ namespace ErrorMessages {
         "Server response does not meet header sizes defined in the protocol.",
         "Server responded with an error.",
         "Invalid hex string.",
-        "Invalid integer."
+        "Invalid integer.",
+        "Incomplete data in my.info file, either fix or delete it to register again.",
+        "Error: Cannot create my.info file.",
+        "Already registered.",
+        "Please register first.",
+        "Invalid selection. Please try again."
     };
     inline std::string getErrorString(ClientErrorCode code) {
         size_t index = static_cast<size_t>(code);
