@@ -111,6 +111,10 @@ std::unique_ptr<ResponseHeader> ResponseParser::parseResponseHeaders(const std::
 	}
 
 	uint8_t version = data[0];
+	if (version != static_cast<uint8_t>(SupportedServerVersions::V1) && 
+		version != static_cast<uint8_t>(SupportedServerVersions::V2)) {
+		throw ClientException(ClientErrorCode::SERVER_VERSION_NOT_SUPPORTED);
+	}
 	uint16_t code = Utils::parseUint16(
 		std::vector<uint8_t>(data.begin() + ProtocolByteSizes::Version,
 			data.begin() + ProtocolByteSizes::Version + ProtocolByteSizes::Code)

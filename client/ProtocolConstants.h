@@ -39,6 +39,11 @@ namespace ServerCodes {
 	constexpr uint16_t ReturnedAwaitingMessages = 2104;
 	constexpr uint16_t Error = 9000;
 }
+
+enum class SupportedServerVersions : uint8_t {
+	V1 = 1,
+	V2 = 2
+};
 namespace MessageType {
 	constexpr uint8_t SymmetricKeyRequest = 1;
 	constexpr uint8_t SymmetricKeySent = 2;
