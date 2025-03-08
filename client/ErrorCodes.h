@@ -1,3 +1,9 @@
+/*
+* File Name: ErrorCodes.h
+* This file contains the errors that will be displayed to the user.
+*/
+
+
 #pragma once
 #include <string>
 #include <array>
