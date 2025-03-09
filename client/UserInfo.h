@@ -42,7 +42,4 @@ private:
 	std::string clientID;
 	bool hasPublicKey;
 	SymmetricKeyStatus symmetricKeyStatus;
-
-
-
 };

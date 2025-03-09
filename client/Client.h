@@ -21,30 +21,30 @@
 
 class Client {
 public:
-    Client();
-    void run();
+	Client();
+	void run();
 
 private:
 
-    void handleUserSelection(int selection);
-    void checkRegistration();
-    void registerClient();
-    void requestClientsList();
-    void requestPublicKey();
-    void requestWaitingMessages();
-    void sendSymmetricKeyRequest();
-    void sendTextMessage();
-    void sendOwnSymmetricKey();
-    void exitClient(); 
-    void handleException(const std::exception& e);
-    
-   
-    RequestBuilder requestBuilder;
-    ResponseParser responseParser;
-    UserInterface userInterface;
-    NetworkManager networkManager;
-    UserInfoList userInfoList;
-    CurrentUser currentUser;
-    FileManager fileManager;
-    std::unique_ptr<EncryptionManager> encryptionManager;
+	void handleUserSelection(int selection);
+	void checkRegistration();
+	void registerClient();
+	void requestClientsList();
+	void requestPublicKey();
+	void requestWaitingMessages();
+	void sendSymmetricKeyRequest();
+	void sendTextMessage();
+	void sendOwnSymmetricKey();
+	void exitClient();
+	void handleException(const std::exception& e);
+
+
+	RequestBuilder requestBuilder;
+	ResponseParser responseParser;
+	UserInterface userInterface;
+	NetworkManager networkManager;
+	UserInfoList userInfoList;
+	CurrentUser currentUser;
+	FileManager fileManager;
+	std::unique_ptr<EncryptionManager> encryptionManager;
 };

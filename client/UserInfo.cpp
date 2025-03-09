@@ -31,7 +31,7 @@ void UserInfo::otherUserRequestedSymmetricKey() {
 	if (this->symmetricKeyStatus == SymmetricKeyStatus::RequestedByCurrentUser) {
 		this->symmetricKeyStatus = SymmetricKeyStatus::RequestedByBoth;
 	}
-	else if(this->symmetricKeyStatus == SymmetricKeyStatus::NotRequested) {
+	else if (this->symmetricKeyStatus == SymmetricKeyStatus::NotRequested) {
 		this->symmetricKeyStatus = SymmetricKeyStatus::RequestedByOtherUser;
 	}
 }

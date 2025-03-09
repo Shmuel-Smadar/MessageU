@@ -11,6 +11,6 @@
 
 class ClientException : public std::runtime_error {
 public:
-    explicit ClientException(ClientErrorCode code)
-        : std::runtime_error(ErrorMessages::getErrorString(code)) {}
+	explicit ClientException(ClientErrorCode code)
+		: std::runtime_error(ErrorMessages::getErrorString(code)) {}
 };

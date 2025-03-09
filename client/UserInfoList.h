@@ -18,13 +18,13 @@
 
 class UserInfoList {
 private:
-    std::vector<UserInfo> userInfoList;
+	std::vector<UserInfo> userInfoList;
 
 public:
-    UserInfoList();
+	UserInfoList();
 
-    UserInfo& getUserByID(const std::string& UserID);
-    UserInfo& getUserByName(const std::string& name);
-    void addUser(const std::string& UserID, const std::string& name);
-    void printUsers(UserInterface& userInterface);
+	UserInfo& getUserByID(const std::string& UserID);
+	UserInfo& getUserByName(const std::string& name);
+	void addUser(const std::string& UserID, const std::string& name);
+	void printUsers(UserInterface& userInterface);
 };

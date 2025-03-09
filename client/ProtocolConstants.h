@@ -72,5 +72,6 @@ struct ResponseHeader {
 	uint32_t payloadSize;
 
 	ResponseHeader(uint8_t ver = 0, uint16_t c = 0, uint32_t size = 0)
-		: version(ver), code(c), payloadSize(size) {}
+		: version(ver), code(c), payloadSize(size) {
+	}
 };
