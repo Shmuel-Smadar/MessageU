@@ -76,7 +76,7 @@ namespace Utils {
 		if (start == str.size())
 			throw ClientException(ClientErrorCode::INVALID_INTEGER);
 		int result = 0;
-		for (int i = start; i < str.size(); ++i)
+		for (size_t i = start; i < str.size(); ++i)
 		{
 			if (str[i] < '0' || str[i] > '9')
 				throw ClientException(ClientErrorCode::INVALID_INTEGER);

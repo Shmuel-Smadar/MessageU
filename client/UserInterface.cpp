@@ -22,7 +22,7 @@ int UserInterface::getUserSelection() const {
 		int selection = Utils::stringToInt(input);
 		return selection;
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		return -1;
 	}
 }

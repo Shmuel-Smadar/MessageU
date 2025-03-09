@@ -38,7 +38,7 @@ void NetworkManager::connect() {
 		);
 		socket.connect(endpoint);
 	}
-	catch (const std::exception& e) {
+	catch (...) {
 		throw ClientException(ClientErrorCode::CONNECTION_ERROR);
 	}
 }
@@ -47,8 +47,8 @@ void NetworkManager::disconnect() {
 	try {
 		socket.close();
 	}
-	catch (const std::exception& e) {
-		std::cerr << "Error while closing socket: " << e.what() << std::endl;
+	catch (...) {
+		throw ClientException(ClientErrorCode::CONNECTION_ERROR);
 	}
 }
 
@@ -75,7 +75,7 @@ void NetworkManager::sendAndReceive(const std::vector<uint8_t>& request, std::ve
 		receiveData(response);
 		disconnect();
 	}
-	catch (const std::exception& e) {
+	catch (...) {
 		disconnect();
 		throw ClientException(ClientErrorCode::SEND_RECEIVE_ERROR);
 	}
