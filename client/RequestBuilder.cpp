@@ -3,7 +3,6 @@
 
 std::vector<uint8_t> RequestBuilder::buildRegistrationRequest(const CurrentUser& currentUser, const std::string& publicKey) {
 	std::vector<uint8_t> buffer = buildRequestHeaders(currentUser);
-	Utils::appendString(buffer, "0000000000000000"); // add empty clientID since we don't have one yet
 	Utils::appendUint16(buffer, static_cast<uint16_t>(ClientCodes::Registration));
 
 	std::vector<uint8_t> payload;
@@ -78,7 +77,15 @@ std::vector<uint8_t> RequestBuilder::buildTextMessageRequest(CurrentUser& curren
 }
 
 std::vector<uint8_t> RequestBuilder::buildRequestHeaders(const CurrentUser& currentUser) {
-	std::vector<uint8_t> buffer = Utils::hexStringToBytes(currentUser.getClientID());
+	std::vector<uint8_t> buffer;
+	//if client ID is empty, fill with 16 zero bytes; otherwise convert hex string to bytes.
+	if (currentUser.getClientID().empty()) {
+		buffer.resize(ProtocolByteSizes::ClientId, 0);
+	}
+	else {
+		buffer = Utils::hexStringToBytes(currentUser.getClientID());
+	}
+	// append the version
 	buffer.push_back(Version::ClientVersion);
 	return buffer;
 }
