@@ -14,7 +14,7 @@ std::string CurrentUser::getName() const {
 }
 
 void CurrentUser::setName(const std::string& name) {
-	if (name.length() > ProtocolByteSizes::ClientName + 1) // +1 for the '\0'
+	if (name.length() > ProtocolByteSizes::ClientName - 1) // - 1 for the '\0'
 		throw ClientException(ClientErrorCode::NAME_TOO_LONG);
 	this->name = name;
 }
