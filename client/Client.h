@@ -42,9 +42,9 @@ private:
 	RequestBuilder requestBuilder;
 	ResponseParser responseParser;
 	UserInterface userInterface;
+	FileManager fileManager;
 	NetworkManager networkManager;
 	UserInfoList userInfoList;
 	CurrentUser currentUser;
-	FileManager fileManager;
 	std::unique_ptr<EncryptionManager> encryptionManager;
 };
