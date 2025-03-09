@@ -29,7 +29,7 @@ enum class ClientErrorCode : int {
 	ALREADY_REGISTERED,
 	PLEASE_REGISTER_FIRST,
 	INVALID_SELECTION,
-	MESSAGE_TOO_LONG,
+	UNKNOWN_SENDER,
 	NUM_ERROR_CODES
 };
 
@@ -61,7 +61,7 @@ namespace ErrorMessages {
 		"Already registered.",
 		"Please register first.",
 		"Invalid selection. Please try again.",
-		"Message content size must not exceeds 32 bytes."
+		"Message gotten is from an unknown sender. please request the client list first."
 	};
 	inline std::string getErrorString(ClientErrorCode code) {
 		size_t index = static_cast<size_t>(code);

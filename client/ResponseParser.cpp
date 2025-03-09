@@ -66,9 +66,14 @@ std::vector<Message> ResponseParser::parseAwaitingMessagesResponse(const std::ve
 		std::string content(reinterpret_cast<const char*>(&data[pos]), messageLength);
 		pos += messageLength;
 		//create a message and send it to function for parsing, finally add it to a vector of messages.
-		Message message(userInfoList.getUserByID(Utils::bytesToHex(fromClient)), messageType, content);
-		parseMessage(message, encryptionManager);
-		messages.emplace_back(message);
+		try {
+			Message message(userInfoList.getUserByID(Utils::bytesToHex(fromClient)), messageType, content);
+			parseMessage(message, encryptionManager);
+			messages.emplace_back(message);
+		} // sender client was not found
+		catch (const ClientException& e) {
+			throw ClientException(ClientErrorCode::UNKNOWN_SENDER);
+		}
 	}
 	return messages;
 }

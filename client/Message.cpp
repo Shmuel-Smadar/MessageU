@@ -4,9 +4,6 @@ Message::Message(UserInfo& userInfo, const uint8_t& messageType, const std::stri
 	: userInfo(userInfo),
 	messageType(messageType),
 	content(content) {
-	if (content.size() > ProtocolByteSizes::MessageMaxSize) {
-		throw ClientException(ClientErrorCode::MESSAGE_TOO_LONG);
-	}
 }
 
 std::string Message::getSenderClientId() const {
@@ -27,9 +24,6 @@ UserInfo Message::getUser() const {
 	return this->userInfo;
 }
 void Message::setContent(const std::string& content) {
-	if (content.size() > ProtocolByteSizes::MessageMaxSize) {
-		throw std::runtime_error(ErrorMessages::getErrorString(ClientErrorCode::MESSAGE_TOO_LONG));
-	}
 	this->content = content;
 }
 
