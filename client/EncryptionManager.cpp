@@ -42,6 +42,10 @@ std::string EncryptionManager::decryptWithPrivateKey(const std::string& cipherte
 
 // generate a symmetric key for the corresponding clientID
 void EncryptionManager::generateSymmetricKey(const std::string& clientID) {
+	// if key already exists, so do not generate a new one.
+	if (symmetricKeys.find(clientID) != symmetricKeys.end()) {
+		return;
+	}
 	unsigned char key[AESWrapper::DEFAULT_KEYLENGTH];
 	AESWrapper::GenerateKey(key, AESWrapper::DEFAULT_KEYLENGTH);
 	symmetricKeys[clientID] = std::make_unique<AESWrapper>(key, AESWrapper::DEFAULT_KEYLENGTH);
