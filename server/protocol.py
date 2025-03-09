@@ -5,6 +5,7 @@ import struct
 from constants import ProtocolByteSizes
 from request_parser import RequestParser
 from constants import ClientCodes
+from constants import SupportedClientVersion
 class Protocol:
     def __init__(self):
         self.request_parser = RequestParser()
@@ -21,6 +22,8 @@ class Protocol:
             
             client_id = request[:client_id_end]
             version = request[client_id_end]
+            if version not in SupportedClientVersion.versions:
+                raise ValueError("Unsupported client version.")
             code = int.from_bytes(request[version_end:code_end], byteorder='little')
             payload_size = int.from_bytes(request[code_end:payload_size_end], byteorder='little')
             total_size = ProtocolByteSizes.HEADER + payload_size

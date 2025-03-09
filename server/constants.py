@@ -17,6 +17,9 @@ class ServerCodes:
     RETURNED_AWAITING_MESSAGES = 2104
     ERROR = 9000
 
+class SupportedClientVersion:
+    versions = [1]
+
 class ProtocolByteSizes:
     VERSION = 1
     CODE = 2
