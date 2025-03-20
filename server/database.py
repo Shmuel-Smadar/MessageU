@@ -92,7 +92,7 @@ class Database:
     def get_messages_for_client(self, client_id: str) -> List[Message]:
         with self.conn:
             rows = self.conn.execute(
-                'SELECT * FROM messages WHERE ToClient = ? ORDER BY rowid ASC', (client_id,)
+                'SELECT * FROM messages WHERE ToClient = ? ORDER BY Type ASC', (client_id,)
             ).fetchall()
         return [Message(**row) for row in rows]
 
