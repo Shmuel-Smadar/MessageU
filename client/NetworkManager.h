@@ -22,15 +22,19 @@
 class NetworkManager {
 public:
 	NetworkManager(FileManager fileManager);
-	void sendAndReceive(const std::vector<uint8_t>& request, std::vector<uint8_t>& response);
-private:
-	std::string IP;
-	uint16_t port;
-	boost::asio::io_context ioContext;
-	boost::asio::ip::tcp::socket socket;
-	bool readServerInfo(const std::string& filename);
 	void connect();
 	void disconnect();
+	bool readServerInfo(const std::string& filename);
+	void sendAndReceive(const std::vector<uint8_t>& request, std::vector<uint8_t>& response);
+private:
 	void sendData(const std::vector<uint8_t>& data);
 	void receiveData(std::vector<uint8_t>& data);
+	boost::asio::io_context ioContext;
+	boost::asio::ip::tcp::socket socket;
+	std::string IP;
+	uint16_t port;
+
+	const std::string DEFAULT_IP = "127.0.0.1";
+	const uint16_t DEFAULT_PORT = 1357;
+	const std::string SERVER_INFO_FILENAME = "server.info";
 };

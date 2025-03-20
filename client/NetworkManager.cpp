@@ -4,10 +4,9 @@ NetworkManager::NetworkManager(FileManager fileManager)
 	: socket(ioContext)
 {
 	try {
-		auto infile = fileManager.openFileIfExists("server.info");
+		auto infile = fileManager.openFileIfExists(SERVER_INFO_FILENAME);
 		if (!infile)
 			throw ClientException(ClientErrorCode::MISSING_SERVER_INFO_FILE);
-
 		std::string line;
 		if (std::getline(*infile, line)) {
 			size_t pos = line.find(':');
@@ -24,8 +23,8 @@ NetworkManager::NetworkManager(FileManager fileManager)
 		}
 	}
 	catch (const std::exception& e) {
-		IP = "127.0.0.1";
-		port = 1357;
+		IP = DEFAULT_IP;
+		port = DEFAULT_PORT;
 		std::cerr << e.what() << std::endl;
 		std::cerr << "Using default address: " << IP << ":" << port << std::endl;
 	}
@@ -68,6 +67,7 @@ bool NetworkManager::readServerInfo(const std::string& filename) {
 	}
 	return false;
 }
+
 void NetworkManager::sendAndReceive(const std::vector<uint8_t>& request, std::vector<uint8_t>& response) {
 	connect();
 	try {
@@ -86,17 +86,14 @@ void NetworkManager::sendData(const std::vector<uint8_t>& data) {
 }
 
 void NetworkManager::receiveData(std::vector<uint8_t>& data) {
-	// read response header (version, code, payload size)
 	uint8_t header[ProtocolByteSizes::Header];
 	size_t bytesRead = boost::asio::read(socket, boost::asio::buffer(header, ProtocolByteSizes::Header));
 	if (bytesRead != ProtocolByteSizes::Header)
 		throw ClientException(ClientErrorCode::INVALID_SERVER_RESPONSE);
-	// extract the payload size
 	std::vector<uint8_t> sizeBytes(header + ProtocolByteSizes::Version + ProtocolByteSizes::Code,
 		header + ProtocolByteSizes::Header);
 	uint32_t payloadSize = Utils::parseUint32(sizeBytes);
 	data.insert(data.end(), header, header + ProtocolByteSizes::Header);
-
 	if (payloadSize > 0) {
 		std::vector<uint8_t> payload(payloadSize);
 		bytesRead = boost::asio::read(socket, boost::asio::buffer(payload));

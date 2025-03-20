@@ -47,4 +47,6 @@ private:
 	UserInfoList userInfoList;
 	CurrentUser currentUser;
 	std::unique_ptr<EncryptionManager> encryptionManager;
+
+	const std::string INFO_FILENAME = "me.info";
 };

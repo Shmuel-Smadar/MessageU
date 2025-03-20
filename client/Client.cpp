@@ -13,14 +13,14 @@ Client::Client()
 }
 
 void Client::checkRegistration() {
-	//check if the file "my.info" exists. 
-	auto infile = fileManager.openFileIfExists("my.info");
+	//check if the file "me.info" exists. 
+	auto infile = fileManager.openFileIfExists(INFO_FILENAME);
 	if (!infile) {
 		currentUser = CurrentUser();
 		encryptionManager = std::make_unique<EncryptionManager>();
 		return;
 	}
-	// if my.info exists, we try to use its data to initialize currentUser and encryptionManager.
+	// if me.info exists, we try to use its data to initialize currentUser and encryptionManager.
 	std::string name, clientID, privateKey;
 	try {
 		std::getline(*infile, name);
@@ -104,12 +104,13 @@ void Client::registerClient() {
 		std::vector<uint8_t> response;
 		networkManager.sendAndReceive(request, response);
 		responseParser.parseRegistrationResponse(response, currentUser);
-		auto outfile = fileManager.createFile("my.info");
+		auto outfile = fileManager.createFile(INFO_FILENAME);
 		if (!outfile) {
 			userInterface.printError(ErrorMessages::getErrorString(ClientErrorCode::CANNOT_CREATE_MY_INFO));
 			return;
 		}
-		// write current user info into my.info file for future runs of the program.
+		// write current user info into me
+		// .info file for future runs of the program.
 		*outfile << currentUser.getName() << std::endl;
 		*outfile << currentUser.getClientID() << std::endl;
 		*outfile << Base64Wrapper::encode(encryptionManager->getPrivateKey()) << std::endl;
