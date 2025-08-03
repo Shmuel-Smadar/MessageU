@@ -35,3 +35,6 @@ For two clients (X and Y) to be able to communciate with each other, they need t
 4. Client Y check their messages, and sends a new secret key to X, encrypted with X's public key.
 5. Client X checks their messages, and retrieves the secret key.
 6. The two clients now can commumicate using the shared secret key.
+
+
+Have fun, meaningful and encrypted coversations :)
