@@ -2,10 +2,10 @@
 ## Prerequisites
 You need python to run the server.
 You C++ 17 or above to run the client.  
-You need to use Boost and CryptoPP libraries to run the client.
-Boost: https://www.boost.org/
+You need to use Boost and CryptoPP libraries to run the client.  
+Boost: https://www.boost.org/  
 CryptoPP: https://github.com/weidai11/cryptopp
-(Boost is also published as  a NuGet)
+(Boost is also published as a NuGet)
 
 ## Building Client
 ```
