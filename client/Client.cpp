@@ -60,6 +60,9 @@ void Client::handleUserSelection(int selection) {
 		registerClient();
 		return;
 	}
+	else if (selection == MenuOptions::Exit) {
+		exitClient();
+	}
 	else if (!currentUser.isRegistered()) {
 		userInterface.printText(ErrorMessages::getErrorString(ClientErrorCode::PLEASE_REGISTER_FIRST));
 		return;
