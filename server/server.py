@@ -6,10 +6,17 @@ from database import Database
 from protocol import Protocol
 
 DEFAULT_PORT = 1357
-IP = '127.0.0.1'
+DEFAULT_HOST = '127.0.0.1'
 PORT_FILE = 'myport.info'
 
 def get_port():
+    env_port = os.getenv('PORT')
+    if env_port:
+        try:
+            return int(env_port)
+        except ValueError:
+            print(f"Invalid PORT value '{env_port}'. Falling back to '{PORT_FILE}' or default port {DEFAULT_PORT}.")
+
     try:
         with open(PORT_FILE, 'r') as f:
             port = int(f.read().strip())
@@ -20,6 +27,9 @@ def get_port():
         print(f"Invalid port number in '{PORT_FILE}'. Using default port {DEFAULT_PORT}.")
     return DEFAULT_PORT
 
+def get_host():
+    return os.getenv('HOST', DEFAULT_HOST)
+
 def unregister_socket(sel, sock):
     try:
         sel.unregister(sock)
@@ -27,9 +37,10 @@ def unregister_socket(sel, sock):
         pass
 
 def main():
+    host = get_host()
     port = get_port()
-    server_address = (IP, port)
-    print(f"Starting server on port {port}...")
+    server_address = (host, port)
+    print(f"Starting server on {host}:{port}...")
 
     db = Database()
     protocol = Protocol()

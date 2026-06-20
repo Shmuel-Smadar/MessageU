@@ -12,6 +12,13 @@
 !*.vcxproj
 !*.vcxproj.filters
 !*.config
+!*.info
+!*.md
+!*.yml
+!*.yaml
+!Dockerfile
+!.dockerignore
 # Keep .gitignore itself
 !.gitignore
 /client/packages
+/client/Debug/

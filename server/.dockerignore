@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*.db
+myport.info
+.pytest_cache/
+.venv/
+venv/

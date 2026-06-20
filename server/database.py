@@ -1,11 +1,12 @@
 # filename: database.py
 # this file manages all database operations
 
+import os
 import sqlite3
 from typing import List, Optional
 from classes import Client, Message
 
-DATABASE_FILE = 'defensive.db'
+DATABASE_FILE = os.getenv('DATABASE_FILE', 'defensive.db')
 
 class Database:
     def __init__(self):

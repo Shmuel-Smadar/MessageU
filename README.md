@@ -11,9 +11,15 @@ CryptoPP: https://github.com/weidai11/cryptopp
 ```
 git clone https://github.com/Shmuel-Smadar/MessageU.git
 cd MessageU-main
-(compile with your favorite C++ compiler)
-./main
+cd client
+nuget restore client.sln
+msbuild client.sln /p:Configuration=Debug /p:Platform=x86
 ```
+
+The client uses NuGet packages for Boost and Crypto++ and lets Visual Studio choose the installed default C++ platform toolset.
+The `server.info` file is copied beside the executable during build and currently points to the deployed ECS server at `51.85.83.9:1357`.
+Change `client/server.info` if the server endpoint changes.
+
 ## Building Server
 ```
 git clone https://github.com/Shmuel-Smadar/MessageU.git
@@ -23,7 +29,21 @@ py server.py
 ```
 
 You can configure the server to use a different port by changing the 'myport.info' file.
+You can also configure the server with environment variables:
+- `HOST`, default `127.0.0.1`
+- `PORT`, default `1357`
+- `DATABASE_FILE`, default `defensive.db`
+
 The database will be saved to a file named 'defensive.db'.
+
+## Running Server With Docker
+```
+cd server
+docker build -t messageu-server .
+docker run --rm -p 1357:1357 -v messageu-data:/data messageu-server
+```
+
+The container listens on `0.0.0.0:1357` and stores the SQLite database at `/data/defensive.db`.
 
 ## Usage
 <img width="541" height="322" alt="image" src="https://github.com/user-attachments/assets/7c357f0a-4845-4005-85d8-6d8b2caf6f5d" />
