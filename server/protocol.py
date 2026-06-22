@@ -11,17 +11,44 @@ class Protocol:
         self.request_parser = RequestParser()
 
     def process_requests(self, data, db: Database):
-        request = data['request']
+        while True:
+            request_size = self.get_next_request_size(data['request'])
+            if request_size is None:
+                return
+
+            request = data['request'][:request_size]
+            data['request'] = data['request'][request_size:]
+            data['response'] += self.process_single_request(request, db)
+
+    def get_next_request_size(self, buffer: bytes):
+        if len(buffer) < ProtocolByteSizes.HEADER:
+            return None
+
+        payload_size_start = (
+            ProtocolByteSizes.CLIENT_ID
+            + ProtocolByteSizes.VERSION
+            + ProtocolByteSizes.CODE
+        )
+        payload_size_end = payload_size_start + ProtocolByteSizes.PAYLOAD_SIZE
+        payload_size = int.from_bytes(
+            buffer[payload_size_start:payload_size_end],
+            byteorder='little'
+        )
+        request_size = ProtocolByteSizes.HEADER + payload_size
+
+        if len(buffer) < request_size:
+            return None
+
+        return request_size
+
+    def process_single_request(self, request: bytes, db: Database):
         try:
             header = self.extract_header(request)
             self.validate_client(header['client_id'], header['version'], header['code'], db)
-            response = self.get_response(header['client_id'], header['code'], header['payload'], db)
-        except Exception as e:
+            return self.get_response(header['client_id'], header['code'], header['payload'], db)
+        except Exception:
             # in case of any error during parsing, return an invalid request response.
-            response = self.request_parser.invalid_request()
-
-        data['response'] += response
-        data['request'] = data['request'][len(request):]
+            return self.request_parser.invalid_request()
 
     # extracts and returns the header fields from the given request.
     def extract_header(self, request: bytes) -> dict:
